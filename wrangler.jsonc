@@ -1,0 +1,17 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "learn-and-grow-childcare",
+  "compatibility_date": "2024-01-01",
+  "pages_build_output_dir": "./dist",
+  "compatibility_flags": ["nodejs_compat"],
+  "vars": {
+    "ADMIN_PASSWORD": "admin123"
+  },
+  "kv_namespaces": [
+    {
+      "binding": "FORMS_STORAGE",
+      "id": "e64496f3b47846dfb9d42e479158e0bd",
+      "preview_id": "e64496f3b47846dfb9d42e479158e0bd"
+    }
+  ]
+}
