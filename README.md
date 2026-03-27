@@ -16,7 +16,7 @@
   - Full SEO optimization with Schema.org structured data
 
 ## URLs
-- **Production**: https://www.learnandgrowchildcarecenter.me
+- **Production**: https://www.learnandgrowchildcarecenter.org
 - **Cloudflare Pages**: https://learn-and-grow-childcare.pages.dev
 - **Latest Deployment**: https://59739466.learn-and-grow-childcare.pages.dev
 - **GitHub**: https://github.com/marketingaipros/learn-and-grow
@@ -216,7 +216,7 @@ npm run "git:commit" "Your commit message"
 ✅ Contact information updated to Louisville, KY location  
 ✅ Video testimonial section with YouTube embeds  
 ✅ GitHub repository connected and synced  
-✅ Custom domain configured (www.learnandgrowchildcarecenter.me)  
+✅ Custom domain configured (www.learnandgrowchildcarecenter.org)  
 ✅ Cloudflare Pages deployment automated  
 
 ## Features Not Yet Implemented
@@ -259,7 +259,7 @@ Your website now includes a **complete admin panel** where you can:
 - Secure password-protected access
 
 ### Accessing the Admin Panel
-**URL**: https://www.learnandgrowchildcarecenter.me/admin
+**URL**: https://www.learnandgrowchildcarecenter.org/admin
 
 **Default Login:**
 - Password: `admin123`
@@ -407,8 +407,8 @@ All form submissions are logged to the console and can be viewed in:
 
 **Step 1: Set up Email Routing**
 1. Go to Cloudflare Dashboard → Email → Email Routing
-2. Add your domain: `learnandgrowchildcarecenter.me`
-3. Create destination address: `info@learnandgrowchildcarecenter.me`
+2. Add your domain: `learnandgrowchildcarecenter.org`
+3. Create destination address: `info@learnandgrowchildcarecenter.org`
 4. Verify email ownership
 
 **Step 2: Install MailChannels (Free Email Sending)**
@@ -421,8 +421,8 @@ app.post('/api/enrollment-application', async (c) => {
   
   // Send email via MailChannels (free on Cloudflare)
   const message = new EmailMessage(
-    "noreply@learnandgrowchildcarecenter.me",
-    "info@learnandgrowchildcarecenter.me",
+    "noreply@learnandgrowchildcarecenter.org",
+    "info@learnandgrowchildcarecenter.org",
     `New Enrollment Application: ${data.childFirstName} ${data.childLastName}`
   );
   
@@ -471,7 +471,7 @@ app.post('/api/enrollment-application', async (c) => {
 
 ### Email Templates
 
-When you set up email sending, emails will be sent to: **info@learnandgrowchildcarecenter.me**
+When you set up email sending, emails will be sent to: **info@learnandgrowchildcarecenter.org**
 
 Each form submission will include:
 - **Tour Requests**: Parent info, child age, preferred date
@@ -491,7 +491,7 @@ Until email is configured:
 ### 1. Editing Contact Information
 All contact information is centralized in `src/index.tsx`. Search and replace:
 - **Phone**: Search for `502-999-4143` and replace with your new number
-- **Email**: Search for `info@learnandgrowchildcarecenter.me` and replace
+- **Email**: Search for `info@learnandgrowchildcarecenter.org` and replace
 - **Address**: Search for `4014 Bardstown Rd, Louisville, KY 40218-2631` and replace
 
 **Important locations to update:**
@@ -555,11 +555,11 @@ npx wrangler pages deploy dist --project-name learn-and-grow-childcare
 
 ### 6. Setting Up Custom Domain
 
-To connect www.learnandgrowchildcarecenter.me:
+To connect www.learnandgrowchildcarecenter.org:
 1. Go to Cloudflare Dashboard → Pages → learn-and-grow-childcare
 2. Click "Custom domains" tab
 3. Click "Set up a custom domain"
-4. Enter: `www.learnandgrowchildcarecenter.me`
+4. Enter: `www.learnandgrowchildcarecenter.org`
 5. Follow DNS setup instructions (add CNAME record)
 6. Cloudflare will automatically handle SSL certificates
 
@@ -590,8 +590,8 @@ Form handling is in the JavaScript section (line ~1432-1449). Update API endpoin
 
 ## Support
 For questions or issues:
-- **Email**: info@learnandgrowchildcarecenter.me
+- **Email**: info@learnandgrowchildcarecenter.org
 - **Phone**: 502-999-4143
 - **Address**: 4014 Bardstown Rd, Louisville, KY 40218-2631
-- **Website**: https://www.learnandgrowchildcarecenter.me
+- **Website**: https://www.learnandgrowchildcarecenter.org
 - **GitHub**: https://github.com/marketingaipros/learn-and-grow

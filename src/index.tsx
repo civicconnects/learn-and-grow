@@ -7,6 +7,7 @@ import { setCookie, getCookie } from 'hono/cookie'
 type Bindings = {
   FORMS_STORAGE: KVNamespace
   ADMIN_PASSWORD: string
+  RESEND_API_KEY: string
 }
 
 const app = new Hono<{ Bindings: Bindings }>()
@@ -58,9 +59,48 @@ async function storeFormSubmission(env: Bindings, type: string, data: any) {
   return id
 }
 
+async function sendEmailViaResend(env: Bindings, payload: any) {
+  const apiKey = env.RESEND_API_KEY
+  
+  if (!apiKey) {
+    console.error('❌ Resend API Key is missing')
+    return { success: false, error: 'API Key missing' }
+  }
+
+  try {
+    const response = await fetch('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${apiKey}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        from: payload.from.name ? `${payload.from.name} <${payload.from.email}>` : payload.from.email,
+        to: payload.to,
+        subject: payload.subject,
+        html: payload.html,
+        text: payload.text
+      })
+    })
+
+    if (response.ok) {
+      const result = await response.json()
+      console.log('✅ Email sent via Resend:', result.id)
+      return { success: true, id: result.id }
+    } else {
+      const error = await response.text()
+      console.error('❌ Resend API error:', error)
+      return { success: false, error }
+    }
+  } catch (error) {
+    console.error('❌ Resend request error:', error)
+    return { success: false, error: error.message }
+  }
+}
+
 // Helper function to send confirmation email to form submitter
-async function sendConfirmationEmail(type: string, data: any) {
-  const fromEmail = 'noreply@learnandgrowchildcarecenter.me'
+async function sendConfirmationEmail(env: Bindings, type: string, data: any) {
+  const fromEmail = 'noreply@learnandgrowchildcarecenter.org'
   const fromName = 'Learn & Grow Childcare'
   
   let toEmail = ''
@@ -88,7 +128,7 @@ We will review your request and contact you within 24 hours to confirm your tour
 
 If you have any questions in the meantime, please contact us:
 Phone: 502-999-4143
-Email: info@learnandgrowchildcarecenter.me
+Email: info@learnandgrowchildcarecenter.org
 Address: 4014 Bardstown Rd, Louisville, KY 40218-2631
 
 We look forward to meeting you and ${data.childName}!
@@ -122,7 +162,7 @@ Where Children Learn, Grow, and Flourish
           <div style="background: #f9fafb; padding: 20px; border-radius: 10px; margin: 20px 0;">
             <h3 style="margin-top: 0;">Contact Us</h3>
             <p><strong>Phone:</strong> <a href="tel:502-999-4143" style="color: #667eea;">502-999-4143</a></p>
-            <p><strong>Email:</strong> <a href="mailto:info@learnandgrowchildcarecenter.me" style="color: #667eea;">info@learnandgrowchildcarecenter.me</a></p>
+            <p><strong>Email:</strong> <a href="mailto:info@learnandgrowchildcarecenter.org" style="color: #667eea;">info@learnandgrowchildcarecenter.org</a></p>
             <p><strong>Address:</strong> 4014 Bardstown Rd, Louisville, KY 40218-2631</p>
           </div>
           
@@ -160,7 +200,7 @@ Required for enrollment:
 
 If you have any questions, please contact us:
 Phone: 502-999-4143
-Email: info@learnandgrowchildcarecenter.me
+Email: info@learnandgrowchildcarecenter.org
 
 Thank you for choosing Learn & Grow Childcare Center!
 
@@ -210,7 +250,7 @@ Where Children Learn, Grow, and Flourish
           <div style="background: #f9fafb; padding: 20px; border-radius: 10px; margin: 20px 0;">
             <h3 style="margin-top: 0;">Contact Us</h3>
             <p><strong>Phone:</strong> <a href="tel:502-999-4143" style="color: #3b82f6;">502-999-4143</a></p>
-            <p><strong>Email:</strong> <a href="mailto:info@learnandgrowchildcarecenter.me" style="color: #3b82f6;">info@learnandgrowchildcarecenter.me</a></p>
+            <p><strong>Email:</strong> <a href="mailto:info@learnandgrowchildcarecenter.org" style="color: #3b82f6;">info@learnandgrowchildcarecenter.org</a></p>
           </div>
           
           <p style="font-size: 14px; color: #666;">Best regards,<br><strong>Learn & Grow Childcare Center Team</strong></p>
@@ -241,7 +281,7 @@ We appreciate your interest in becoming part of our team!
 
 If you have any questions, please contact us:
 Phone: 502-999-4143
-Email: info@learnandgrowchildcarecenter.me
+Email: info@learnandgrowchildcarecenter.org
 
 Thank you for considering Learn & Grow Childcare Center!
 
@@ -279,7 +319,7 @@ Where Children Learn, Grow, and Flourish
           <div style="background: #f9fafb; padding: 20px; border-radius: 10px; margin: 20px 0;">
             <h3 style="margin-top: 0;">Contact Us</h3>
             <p><strong>Phone:</strong> <a href="tel:502-999-4143" style="color: #10b981;">502-999-4143</a></p>
-            <p><strong>Email:</strong> <a href="mailto:info@learnandgrowchildcarecenter.me" style="color: #10b981;">info@learnandgrowchildcarecenter.me</a></p>
+            <p><strong>Email:</strong> <a href="mailto:info@learnandgrowchildcarecenter.org" style="color: #10b981;">info@learnandgrowchildcarecenter.org</a></p>
           </div>
           
           <p style="font-size: 16px;">We appreciate your interest in becoming part of our team!</p>
@@ -291,44 +331,23 @@ Where Children Learn, Grow, and Flourish
   
   // Send confirmation email to submitter
   try {
-    const emailPayload = {
-      personalizations: [
-        {
-          to: [{ email: toEmail }],
-        },
-      ],
+    const result = await sendEmailViaResend(env, {
       from: {
         email: fromEmail,
         name: fromName,
       },
+      to: [toEmail],
       subject: subject,
-      content: [
-        {
-          type: 'text/plain',
-          value: textBody,
-        },
-        {
-          type: 'text/html',
-          value: htmlBody,
-        },
-      ],
-    }
-    
-    const response = await fetch('https://api.mailchannels.net/tx/v1/send', {
-      method: 'POST',
-      headers: {
-        'content-type': 'application/json',
-      },
-      body: JSON.stringify(emailPayload),
+      text: textBody,
+      html: htmlBody
     })
     
-    if (response.ok) {
+    if (result.success) {
       console.log('✅ Confirmation email sent to:', toEmail)
       return { success: true, to: toEmail }
     } else {
-      const error = await response.text()
-      console.error('❌ Confirmation email failed:', error)
-      return { success: false, error }
+      console.error('❌ Confirmation email failed:', result.error)
+      return { success: false, error: result.error }
     }
   } catch (error) {
     console.error('❌ Confirmation email error:', error)
@@ -336,10 +355,10 @@ Where Children Learn, Grow, and Flourish
   }
 }
 
-// Helper function to send email via MailChannels (Cloudflare's free email service)
-async function sendEmailNotification(type: string, data: any) {
-  const toEmail = 'LearnandGrowCC@gmail.com'
-  const fromEmail = 'noreply@learnandgrowchildcarecenter.me'
+// Helper function to send email notification to admin
+async function sendEmailNotification(env: Bindings, type: string, data: any) {
+  const toEmail = 'info@learnandgrowchildcarecenter.org'
+  const fromEmail = 'noreply@learnandgrowchildcarecenter.org'
   const fromName = 'Learn & Grow Childcare'
   
   let subject = ''
@@ -361,7 +380,7 @@ Preferred Tour Date: ${data.tourDate}
 Message: ${data.message || 'None'}
 
 ---
-View in admin panel: https://www.learnandgrowchildcarecenter.me/admin
+View in admin panel: https://www.learnandgrowchildcarecenter.org/admin
     `
     htmlBody = `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f9f9f9;">
@@ -384,7 +403,7 @@ View in admin panel: https://www.learnandgrowchildcarecenter.me/admin
           <p><strong>Message:</strong> ${data.message || 'None'}</p>
           
           <div style="margin-top: 30px; padding: 20px; background: #f0f0f0; border-radius: 5px; text-align: center;">
-            <a href="https://www.learnandgrowchildcarecenter.me/admin" style="display: inline-block; padding: 12px 30px; background: #667eea; color: white; text-decoration: none; border-radius: 5px; font-weight: bold;">View in Admin Panel</a>
+            <a href="https://www.learnandgrowchildcarecenter.org/admin" style="display: inline-block; padding: 12px 30px; background: #667eea; color: white; text-decoration: none; border-radius: 5px; font-weight: bold;">View in Admin Panel</a>
           </div>
         </div>
       </div>
@@ -425,7 +444,7 @@ Referral Source: ${data.referralSource || 'Not specified'}
 Comments: ${data.additionalComments || 'None'}
 
 ---
-View in admin panel: https://www.learnandgrowchildcarecenter.me/admin
+View in admin panel: https://www.learnandgrowchildcarecenter.org/admin
     `
     htmlBody = `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f9f9f9;">
@@ -460,7 +479,7 @@ View in admin panel: https://www.learnandgrowchildcarecenter.me/admin
           <p><strong>Pediatrician:</strong> ${data.pediatrician || 'Not provided'}</p>
           
           <div style="margin-top: 30px; padding: 20px; background: #f0f0f0; border-radius: 5px; text-align: center;">
-            <a href="https://www.learnandgrowchildcarecenter.me/admin" style="display: inline-block; padding: 12px 30px; background: #3b82f6; color: white; text-decoration: none; border-radius: 5px; font-weight: bold;">View in Admin Panel</a>
+            <a href="https://www.learnandgrowchildcarecenter.org/admin" style="display: inline-block; padding: 12px 30px; background: #3b82f6; color: white; text-decoration: none; border-radius: 5px; font-weight: bold;">View in Admin Panel</a>
           </div>
         </div>
       </div>
@@ -501,7 +520,7 @@ WHY JOIN US
 ${data.whyJoin}
 
 ---
-View in admin panel: https://www.learnandgrowchildcarecenter.me/admin
+View in admin panel: https://www.learnandgrowchildcarecenter.org/admin
     `
     htmlBody = `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f9f9f9;">
@@ -531,53 +550,32 @@ View in admin panel: https://www.learnandgrowchildcarecenter.me/admin
           <p><strong>Reference 2:</strong> ${data.ref2Name} (${data.ref2Relationship})<br/>Phone: <a href="tel:${data.ref2Phone}">${data.ref2Phone}</a></p>
           
           <div style="margin-top: 30px; padding: 20px; background: #f0f0f0; border-radius: 5px; text-align: center;">
-            <a href="https://www.learnandgrowchildcarecenter.me/admin" style="display: inline-block; padding: 12px 30px; background: #10b981; color: white; text-decoration: none; border-radius: 5px; font-weight: bold;">View in Admin Panel</a>
+            <a href="https://www.learnandgrowchildcarecenter.org/admin" style="display: inline-block; padding: 12px 30px; background: #10b981; color: white; text-decoration: none; border-radius: 5px; font-weight: bold;">View in Admin Panel</a>
           </div>
         </div>
       </div>
     `
   }
   
-  // Send email via MailChannels (Cloudflare's free email sending service)
+  // Send email via Resend
   try {
-    const emailPayload = {
-      personalizations: [
-        {
-          to: [{ email: toEmail, name: 'Learn & Grow Admin' }],
-        },
-      ],
+    const result = await sendEmailViaResend(env, {
       from: {
         email: fromEmail,
         name: fromName,
       },
+      to: [toEmail],
       subject: subject,
-      content: [
-        {
-          type: 'text/plain',
-          value: textBody,
-        },
-        {
-          type: 'text/html',
-          value: htmlBody,
-        },
-      ],
-    }
-    
-    const response = await fetch('https://api.mailchannels.net/tx/v1/send', {
-      method: 'POST',
-      headers: {
-        'content-type': 'application/json',
-      },
-      body: JSON.stringify(emailPayload),
+      text: textBody,
+      html: htmlBody
     })
     
-    if (response.ok) {
+    if (result.success) {
       console.log('✅ Email sent successfully:', subject)
       return { success: true, subject }
     } else {
-      const error = await response.text()
-      console.error('❌ Email sending failed:', error)
-      return { success: false, error }
+      console.error('❌ Email sending failed:', result.error)
+      return { success: false, error: result.error }
     }
   } catch (error) {
     console.error('❌ Email sending error:', error)
@@ -586,8 +584,8 @@ View in admin panel: https://www.learnandgrowchildcarecenter.me/admin
 }
 
 // Send confirmation email to user
-async function sendUserConfirmation(type: string, data: any, userEmail: string) {
-  const fromEmail = 'noreply@learnandgrowchildcarecenter.me'
+async function sendUserConfirmation(env: Bindings, type: string, data: any, userEmail: string) {
+  const fromEmail = 'noreply@learnandgrowchildcarecenter.org'
   const fromName = 'Learn & Grow Childcare Center'
   
   let subject = ''
@@ -614,7 +612,7 @@ Louisville, KY 40218-2631
 
 Contact Us:
 Phone: 502-999-4143
-Email: info@learnandgrowchildcarecenter.me
+Email: info@learnandgrowchildcarecenter.org
 
 We look forward to meeting you and ${data.childName}!
 
@@ -652,7 +650,7 @@ The Learn & Grow Team
             <h3 style="color: #667eea; margin-top: 20px;">📞 Contact Us</h3>
             <p style="margin: 5px 0; color: #333;">
               <strong>Phone:</strong> <a href="tel:502-999-4143" style="color: #667eea; text-decoration: none;">502-999-4143</a><br/>
-              <strong>Email:</strong> <a href="mailto:info@learnandgrowchildcarecenter.me" style="color: #667eea; text-decoration: none;">info@learnandgrowchildcarecenter.me</a>
+              <strong>Email:</strong> <a href="mailto:info@learnandgrowchildcarecenter.org" style="color: #667eea; text-decoration: none;">info@learnandgrowchildcarecenter.org</a>
             </p>
           </div>
           
@@ -685,7 +683,7 @@ Next Steps:
 
 Questions? Contact Us:
 Phone: 502-999-4143
-Email: info@learnandgrowchildcarecenter.me
+Email: info@learnandgrowchildcarecenter.org
 
 Thank you for choosing Learn & Grow Childcare Center!
 
@@ -722,7 +720,7 @@ The Admissions Team
             <h3 style="color: #3b82f6; margin-top: 0;">📞 Questions? Contact Us</h3>
             <p style="margin: 5px 0; color: #333;">
               <strong>Phone:</strong> <a href="tel:502-999-4143" style="color: #3b82f6; text-decoration: none;">502-999-4143</a><br/>
-              <strong>Email:</strong> <a href="mailto:info@learnandgrowchildcarecenter.me" style="color: #3b82f6; text-decoration: none;">info@learnandgrowchildcarecenter.me</a>
+              <strong>Email:</strong> <a href="mailto:info@learnandgrowchildcarecenter.org" style="color: #3b82f6; text-decoration: none;">info@learnandgrowchildcarecenter.org</a>
             </p>
           </div>
           
@@ -761,7 +759,7 @@ Why Join Learn & Grow:
 
 Questions? Contact Us:
 Phone: 502-999-4143
-Email: info@learnandgrowchildcarecenter.me
+Email: info@learnandgrowchildcarecenter.org
 
 Thank you for your interest in Learn & Grow Childcare Center!
 
@@ -807,7 +805,7 @@ The HR Team
             <h3 style="color: #10b981; margin-top: 0;">📞 Questions? Contact Us</h3>
             <p style="margin: 5px 0; color: #333;">
               <strong>Phone:</strong> <a href="tel:502-999-4143" style="color: #10b981; text-decoration: none;">502-999-4143</a><br/>
-              <strong>Email:</strong> <a href="mailto:info@learnandgrowchildcarecenter.me" style="color: #10b981; text-decoration: none;">info@learnandgrowchildcarecenter.me</a>
+              <strong>Email:</strong> <a href="mailto:info@learnandgrowchildcarecenter.org" style="color: #10b981; text-decoration: none;">info@learnandgrowchildcarecenter.org</a>
             </p>
           </div>
           
@@ -822,46 +820,25 @@ The HR Team
     `
   }
   
-  // Send confirmation email via MailChannels
+  // Send confirmation email via Resend
   try {
-    const emailPayload = {
-      personalizations: [
-        {
-          to: [{ email: userEmail }],
-        },
-      ],
+    const result = await sendEmailViaResend(env, {
       from: {
         email: fromEmail,
         name: fromName,
       },
+      to: [userEmail],
       subject: subject,
-      content: [
-        {
-          type: 'text/plain',
-          value: textBody,
-        },
-        {
-          type: 'text/html',
-          value: htmlBody,
-        },
-      ],
-    }
-    
-    const response = await fetch('https://api.mailchannels.net/tx/v1/send', {
-      method: 'POST',
-      headers: {
-        'content-type': 'application/json',
-      },
-      body: JSON.stringify(emailPayload),
+      text: textBody,
+      html: htmlBody
     })
     
-    if (response.ok) {
+    if (result.success) {
       console.log('✅ Confirmation email sent to user:', userEmail)
       return { success: true }
     } else {
-      const error = await response.text()
-      console.error('❌ Confirmation email failed:', error)
-      return { success: false, error }
+      console.error('❌ Confirmation email failed:', result.error)
+      return { success: false, error: result.error }
     }
   } catch (error) {
     console.error('❌ Confirmation email error:', error)
@@ -873,7 +850,7 @@ The HR Team
 app.get('/api/contact', (c) => {
   return c.json({ 
     phone: '502-999-4143',
-    email: 'info@learnandgrowchildcarecenter.me',
+    email: 'info@learnandgrowchildcarecenter.org',
     address: '4014 Bardstown Rd, Louisville, KY 40218-2631'
   })
 })
@@ -885,10 +862,10 @@ app.post('/api/schedule-tour', async (c) => {
   const submissionId = await storeFormSubmission(c.env, 'tour', data)
   
   // Send email notification to admin
-  await sendEmailNotification('tour', data)
+  await sendEmailNotification(c.env, 'tour', data)
   
   // Send confirmation email to user
-  await sendUserConfirmation('tour', data, data.email)
+  await sendUserConfirmation(c.env, 'tour', data, data.email)
   
   return c.json({ 
     success: true, 
@@ -915,10 +892,10 @@ app.post('/api/enrollment-application', async (c) => {
   const submissionId = await storeFormSubmission(c.env, 'enrollment', data)
   
   // Send email notification to admin
-  await sendEmailNotification('enrollment', data)
+  await sendEmailNotification(c.env, 'enrollment', data)
   
   // Send confirmation email to user
-  await sendUserConfirmation('enrollment', data, data.parentEmail)
+  await sendUserConfirmation(c.env, 'enrollment', data, data.parentEmail)
   
   console.log('Enrollment Application Received:', {
     id: submissionId,
@@ -943,10 +920,10 @@ app.post('/api/employment-application', async (c) => {
   const submissionId = await storeFormSubmission(c.env, 'employment', data)
   
   // Send email notification to admin
-  await sendEmailNotification('employment', data)
+  await sendEmailNotification(c.env, 'employment', data)
   
   // Send confirmation email to user
-  await sendUserConfirmation('employment', data, data.email)
+  await sendUserConfirmation(c.env, 'employment', data, data.email)
   
   console.log('Employment Application Received:', {
     id: submissionId,
@@ -1010,7 +987,7 @@ app.post('/admin/forgot-password', async (c) => {
   try {
     // Send password reset email to admin email
     const resetToken = Math.random().toString(36).substr(2, 15) + Date.now().toString(36)
-    const resetLink = `https://www.learnandgrowchildcarecenter.me/admin/reset-password?token=${resetToken}`
+    const resetLink = `https://www.learnandgrowchildcarecenter.org/admin/reset-password?token=${resetToken}`
     
     // Store reset token in KV (expires in 1 hour)
     await c.env.FORMS_STORAGE?.put(`reset:${resetToken}`, 'valid', {
@@ -1018,21 +995,14 @@ app.post('/admin/forgot-password', async (c) => {
     })
     
     // Send reset email
-    const emailPayload = {
-      personalizations: [
-        {
-          to: [{ email: 'LearnandGrowCC@gmail.com', name: 'Admin' }],
-        },
-      ],
+    const result = await sendEmailViaResend(c.env, {
       from: {
-        email: 'noreply@learnandgrowchildcarecenter.me',
+        email: 'noreply@learnandgrowchildcarecenter.org',
         name: 'Learn & Grow Childcare',
       },
+      to: ['info@learnandgrowchildcarecenter.org'],
       subject: '🔐 Password Reset Request - Admin Panel',
-      content: [
-        {
-          type: 'text/plain',
-          value: `
+      text: `
 Password Reset Request
 
 A password reset was requested for your Learn & Grow Childcare admin panel.
@@ -1045,41 +1015,28 @@ If you didn't request this, please ignore this email.
 ---
 Learn & Grow Childcare Center
 4014 Bardstown Rd, Louisville, KY 40218-2631
-          `,
-        },
-        {
-          type: 'text/html',
-          value: `
-            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f9f9f9;">
-              <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 30px; border-radius: 10px 10px 0 0; text-align: center;">
-                <h1 style="color: white; margin: 0;">🔐 Password Reset</h1>
-              </div>
-              <div style="background: white; padding: 30px; border-radius: 0 0 10px 10px;">
-                <p style="font-size: 16px;">A password reset was requested for your Learn & Grow Childcare admin panel.</p>
-                <p style="font-size: 16px;">Click the button below to reset your password (link expires in 1 hour):</p>
-                <div style="text-align: center; margin: 30px 0;">
-                  <a href="${resetLink}" style="display: inline-block; padding: 15px 40px; background: #667eea; color: white; text-decoration: none; border-radius: 5px; font-weight: bold; font-size: 16px;">Reset Password</a>
-                </div>
-                <p style="font-size: 14px; color: #666;">If you didn't request this, please ignore this email. Your password will remain unchanged.</p>
-                <hr style="margin: 30px 0; border: none; border-top: 1px solid #eee;">
-                <p style="font-size: 12px; color: #999; text-align: center;">Learn & Grow Childcare Center<br>4014 Bardstown Rd, Louisville, KY 40218-2631</p>
-              </div>
+      `,
+      html: `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f9f9f9;">
+          <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 30px; border-radius: 10px 10px 0 0; text-align: center;">
+            <h1 style="color: white; margin: 0;">🔐 Password Reset</h1>
+          </div>
+          <div style="background: white; padding: 30px; border-radius: 0 0 10px 10px;">
+            <p style="font-size: 16px;">A password reset was requested for your Learn & Grow Childcare admin panel.</p>
+            <p style="font-size: 16px;">Click the button below to reset your password (link expires in 1 hour):</p>
+            <div style="text-align: center; margin: 30px 0;">
+              <a href="${resetLink}" style="display: inline-block; padding: 15px 40px; background: #667eea; color: white; text-decoration: none; border-radius: 5px; font-weight: bold; font-size: 16px;">Reset Password</a>
             </div>
-          `,
-        },
-      ],
-    }
-    
-    const response = await fetch('https://api.mailchannels.net/tx/v1/send', {
-      method: 'POST',
-      headers: {
-        'content-type': 'application/json',
-      },
-      body: JSON.stringify(emailPayload),
+            <p style="font-size: 14px; color: #666;">If you didn't request this, please ignore this email. Your password will remain unchanged.</p>
+            <hr style="margin: 30px 0; border: none; border-top: 1px solid #eee;">
+            <p style="font-size: 12px; color: #999; text-align: center;">Learn & Grow Childcare Center<br>4014 Bardstown Rd, Louisville, KY 40218-2631</p>
+          </div>
+        </div>
+      `
     })
     
-    if (response.ok) {
-      return c.html(getForgotPasswordPage('✅ Password reset link sent to LearnandGrowCC@gmail.com. Check your inbox!'))
+    if (result.success) {
+      return c.html(getForgotPasswordPage('✅ Password reset link sent to info@learnandgrowchildcarecenter.org. Check your inbox!'))
     } else {
       throw new Error('Email sending failed')
     }
@@ -1135,21 +1092,14 @@ app.post('/admin/reset-password', async (c) => {
   await c.env.FORMS_STORAGE?.delete(`reset:${token}`)
   
   // Send confirmation email with new password
-  const emailPayload = {
-    personalizations: [
-      {
-        to: [{ email: 'LearnandGrowCC@gmail.com', name: 'Admin' }],
-      },
-    ],
+  await sendEmailViaResend(c.env, {
     from: {
-      email: 'noreply@learnandgrowchildcarecenter.me',
+      email: 'noreply@learnandgrowchildcarecenter.org',
       name: 'Learn & Grow Childcare',
     },
+    to: ['info@learnandgrowchildcarecenter.org'],
     subject: '✅ Password Reset Successful - Admin Panel',
-    content: [
-      {
-        type: 'text/plain',
-        value: `
+    text: `
 Password Reset Successful
 
 Your admin panel password has been successfully reset.
@@ -1159,49 +1109,36 @@ Your new password is: ${newPassword}
 Important: Please save this password in a secure location.
 
 You can now log in at:
-https://www.learnandgrowchildcarecenter.me/admin
+https://www.learnandgrowchildcarecenter.org/admin
 
 For security, consider changing this password to something more memorable after logging in by updating it in the Cloudflare Dashboard.
 
 ---
 Learn & Grow Childcare Center
 4014 Bardstown Rd, Louisville, KY 40218-2631
-        `,
-      },
-      {
-        type: 'text/html',
-        value: `
-          <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f9f9f9;">
-            <div style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); padding: 30px; border-radius: 10px 10px 0 0; text-align: center;">
-              <h1 style="color: white; margin: 0;">✅ Password Reset Successful</h1>
-            </div>
-            <div style="background: white; padding: 30px; border-radius: 0 0 10px 10px;">
-              <p style="font-size: 16px;">Your admin panel password has been successfully reset.</p>
-              <div style="background: #f0f0f0; padding: 20px; border-radius: 5px; margin: 20px 0;">
-                <p style="margin: 0; font-size: 14px; color: #666;">Your new password:</p>
-                <p style="margin: 10px 0 0 0; font-size: 20px; font-weight: bold; font-family: monospace; color: #333;">${newPassword}</p>
-              </div>
-              <p style="font-size: 14px; color: #d97706; background: #fef3c7; padding: 15px; border-radius: 5px;">
-                <strong>⚠️ Important:</strong> Please save this password in a secure location.
-              </p>
-              <div style="text-align: center; margin: 30px 0;">
-                <a href="https://www.learnandgrowchildcarecenter.me/admin" style="display: inline-block; padding: 15px 40px; background: #10b981; color: white; text-decoration: none; border-radius: 5px; font-weight: bold; font-size: 16px;">Login Now</a>
-              </div>
-              <hr style="margin: 30px 0; border: none; border-top: 1px solid #eee;">
-              <p style="font-size: 12px; color: #999; text-align: center;">Learn & Grow Childcare Center<br>4014 Bardstown Rd, Louisville, KY 40218-2631</p>
-            </div>
+    `,
+    html: `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f9f9f9;">
+        <div style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); padding: 30px; border-radius: 10px 10px 0 0; text-align: center;">
+          <h1 style="color: white; margin: 0;">✅ Password Reset Successful</h1>
+        </div>
+        <div style="background: white; padding: 30px; border-radius: 0 0 10px 10px;">
+          <p style="font-size: 16px;">Your admin panel password has been successfully reset.</p>
+          <div style="background: #f0f0f0; padding: 20px; border-radius: 5px; margin: 20px 0;">
+            <p style="margin: 0; font-size: 14px; color: #666;">Your new password:</p>
+            <p style="margin: 10px 0 0 0; font-size: 20px; font-weight: bold; font-family: monospace; color: #333;">${newPassword}</p>
           </div>
-        `,
-      },
-    ],
-  }
-  
-  await fetch('https://api.mailchannels.net/tx/v1/send', {
-    method: 'POST',
-    headers: {
-      'content-type': 'application/json',
-    },
-    body: JSON.stringify(emailPayload),
+          <p style="font-size: 14px; color: #d97706; background: #fef3c7; padding: 15px; border-radius: 5px;">
+            <strong>⚠️ Important:</strong> Please save this password in a secure location.
+          </p>
+          <div style="text-align: center; margin: 30px 0;">
+            <a href="https://www.learnandgrowchildcarecenter.org/admin" style="display: inline-block; padding: 15px 40px; background: #10b981; color: white; text-decoration: none; border-radius: 5px; font-weight: bold; font-size: 16px;">Login Now</a>
+          </div>
+          <hr style="margin: 30px 0; border: none; border-top: 1px solid #eee;">
+          <p style="font-size: 12px; color: #999; text-align: center;">Learn & Grow Childcare Center<br>4014 Bardstown Rd, Louisville, KY 40218-2631</p>
+        </div>
+      </div>
+    `
   })
   
   // Return success page with instructions to check email
@@ -1219,7 +1156,7 @@ Learn & Grow Childcare Center
         <div class="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-md text-center">
             <i class="fas fa-check-circle text-6xl text-green-600 mb-4"></i>
             <h1 class="text-3xl font-bold text-gray-800 mb-4">Password Reset Successful!</h1>
-            <p class="text-gray-600 mb-6">Your new password has been sent to <strong>LearnandGrowCC@gmail.com</strong></p>
+            <p class="text-gray-600 mb-6">Your new password has been sent to <strong>info@learnandgrowchildcarecenter.org</strong></p>
             <p class="text-sm text-gray-500 mb-8">Check your inbox for your new password, then use it to log in below.</p>
             <a href="/admin/login" class="inline-block bg-gradient-to-r from-green-600 to-blue-600 text-white px-8 py-3 rounded-lg font-bold hover:from-green-700 hover:to-blue-700 transition">
                 <i class="fas fa-sign-in-alt mr-2"></i>Go to Login
@@ -1312,10 +1249,10 @@ const getStructuredData = () => {
     "@graph": [
       {
         "@type": "ChildCare",
-        "@id": "https://learnandgrowchildcare.com/#organization",
+        "@id": "https://learnandgrowchildcarecenter.org/#organization",
         "name": "Learn and Grow Childcare Center",
-        "url": "https://learnandgrowchildcare.com",
-        "logo": "https://learnandgrowchildcare.com/static/logo.png",
+        "url": "https://learnandgrowchildcarecenter.org",
+        "logo": "https://learnandgrowchildcarecenter.org/static/logo.png",
         "description": "Where Children Learn, Grow, and Flourish in a Safe, Nurturing Environment. Licensed childcare center offering Infant Care, Toddler Programs, Preschool, and School Age Care.",
         "address": {
           "@type": "PostalAddress",
@@ -1331,7 +1268,7 @@ const getStructuredData = () => {
           "longitude": "-85.7135"
         },
         "telephone": "502-999-4143",
-        "email": "info@learnandgrowchildcarecenter.me",
+        "email": "info@learnandgrowchildcarecenter.org",
         "priceRange": "$$",
         "openingHoursSpecification": [
           {
@@ -1349,18 +1286,18 @@ const getStructuredData = () => {
       },
       {
         "@type": "WebSite",
-        "@id": "https://learnandgrowchildcare.com/#website",
-        "url": "https://learnandgrowchildcare.com",
+        "@id": "https://learnandgrowchildcarecenter.org/#website",
+        "url": "https://learnandgrowchildcarecenter.org",
         "name": "Learn and Grow Childcare Center",
         "publisher": {
-          "@id": "https://learnandgrowchildcare.com/#organization"
+          "@id": "https://learnandgrowchildcarecenter.org/#organization"
         }
       },
       {
         "@type": "Service",
         "serviceType": "Infant Care",
         "provider": {
-          "@id": "https://learnandgrowchildcare.com/#organization"
+          "@id": "https://learnandgrowchildcarecenter.org/#organization"
         },
         "areaServed": "Louisville, KY",
         "description": "Nurturing care for infants 6 weeks to 18 months with focus on bonding, sensory exploration, and developmental milestones."
@@ -1369,7 +1306,7 @@ const getStructuredData = () => {
         "@type": "Service",
         "serviceType": "Toddler Program",
         "provider": {
-          "@id": "https://learnandgrowchildcare.com/#organization"
+          "@id": "https://learnandgrowchildcarecenter.org/#organization"
         },
         "areaServed": "Louisville, KY",
         "description": "Active learning program for toddlers 18 months to 3 years focusing on language development, social skills, and independence."
@@ -1378,7 +1315,7 @@ const getStructuredData = () => {
         "@type": "Service",
         "serviceType": "Preschool",
         "provider": {
-          "@id": "https://learnandgrowchildcare.com/#organization"
+          "@id": "https://learnandgrowchildcarecenter.org/#organization"
         },
         "areaServed": "Louisville, KY",
         "description": "Comprehensive preschool program for ages 3-5 preparing children for kindergarten through play-based learning."
@@ -1387,7 +1324,7 @@ const getStructuredData = () => {
         "@type": "Service",
         "serviceType": "School Age Care",
         "provider": {
-          "@id": "https://learnandgrowchildcare.com/#organization"
+          "@id": "https://learnandgrowchildcarecenter.org/#organization"
         },
         "areaServed": "Louisville, KY",
         "description": "Before and after school care for children ages 5-12 with homework support, enrichment activities, and social development."
@@ -1414,7 +1351,7 @@ app.get('/', (c) => {
     <meta property="og:title" content="Learn and Grow Childcare Center">
     <meta property="og:description" content="Where Children Learn, Grow, and Flourish in a Safe, Nurturing Environment">
     <meta property="og:type" content="website">
-    <meta property="og:url" content="https://www.learnandgrowchildcarecenter.me">
+    <meta property="og:url" content="https://www.learnandgrowchildcarecenter.org">
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -2399,7 +2336,7 @@ app.get('/', (c) => {
                         </h3>
                         <p class="text-white text-lg mb-6 max-w-2xl mx-auto">
                             Download our official employment application, fill it out at your convenience, and email it to us at 
-                            <a href="mailto:LearnandGrowCC@gmail.com" class="font-bold underline hover:text-yellow-300">LearnandGrowCC@gmail.com</a>
+                            <a href="mailto:info@learnandgrowchildcarecenter.org" class="font-bold underline hover:text-yellow-300">info@learnandgrowchildcarecenter.org</a>
                         </p>
                         <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
                             <a href="/forms/employment-application.pdf" target="_blank" 
@@ -2407,7 +2344,7 @@ app.get('/', (c) => {
                                 <i class="fas fa-download"></i>
                                 Download PDF Form
                             </a>
-                            <a href="mailto:LearnandGrowCC@gmail.com" 
+                            <a href="mailto:info@learnandgrowchildcarecenter.org" 
                                class="bg-yellow-400 text-green-900 px-8 py-4 rounded-lg font-bold text-lg hover:bg-yellow-300 transition shadow-lg flex items-center gap-2">
                                 <i class="fas fa-envelope"></i>
                                 Email Form to Us
@@ -2768,7 +2705,7 @@ app.get('/', (c) => {
                     </h3>
                     <p class="text-white text-lg mb-6 max-w-2xl mx-auto">
                         Download our official enrollment form, fill it out at your convenience, and email it to us at 
-                        <a href="mailto:LearnandGrowCC@gmail.com" class="font-bold underline hover:text-yellow-300">LearnandGrowCC@gmail.com</a>
+                        <a href="mailto:info@learnandgrowchildcarecenter.org" class="font-bold underline hover:text-yellow-300">info@learnandgrowchildcarecenter.org</a>
                     </p>
                     <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
                         <a href="/forms/enrollment-application.pdf" target="_blank" 
@@ -2776,7 +2713,7 @@ app.get('/', (c) => {
                             <i class="fas fa-download"></i>
                             Download PDF Form
                         </a>
-                        <a href="mailto:LearnandGrowCC@gmail.com" 
+                        <a href="mailto:info@learnandgrowchildcarecenter.org" 
                            class="bg-yellow-400 text-purple-900 px-8 py-4 rounded-lg font-bold text-lg hover:bg-yellow-300 transition shadow-lg flex items-center gap-2">
                             <i class="fas fa-envelope"></i>
                             Email Form to Us
@@ -3281,7 +3218,7 @@ app.get('/', (c) => {
                                 <i class="fas fa-envelope text-2xl text-blue-600 mr-4 mt-1"></i>
                                 <div>
                                     <p class="font-bold text-gray-800 mb-1">Email</p>
-                                    <p class="text-gray-600">info@learnandgrowchildcarecenter.me</p>
+                                    <p class="text-gray-600">info@learnandgrowchildcarecenter.org</p>
                                     <p class="text-sm text-gray-500">We respond within 24 hours</p>
                                 </div>
                             </div>
@@ -3448,7 +3385,7 @@ app.get('/', (c) => {
                     <h4 class="font-bold text-lg mb-4">Contact</h4>
                     <ul class="space-y-2 text-purple-200 text-sm">
                         <li><i class="fas fa-phone mr-2"></i>502-999-4143</li>
-                        <li><i class="fas fa-envelope mr-2"></i>info@learnandgrowchildcarecenter.me</li>
+                        <li><i class="fas fa-envelope mr-2"></i>info@learnandgrowchildcarecenter.org</li>
                         <li><i class="fas fa-map-marker-alt mr-2"></i>4014 Bardstown Rd<br/>Louisville, KY 40218-2631</li>
                     </ul>
                 </div>
@@ -3642,7 +3579,7 @@ app.get('/', (c) => {
                     window.scrollTo({ top: 0, behavior: 'smooth' });
                 }
             } catch (error) {
-                alert('There was an error submitting your application. Please call us at 502-999-4143 or email info@learnandgrowchildcarecenter.me for assistance.');
+                alert('There was an error submitting your application. Please call us at 502-999-4143 or email info@learnandgrowchildcarecenter.org for assistance.');
                 console.error('Error:', error);
             }
         });
@@ -3665,7 +3602,7 @@ app.get('/', (c) => {
                     window.scrollTo({ top: 0, behavior: 'smooth' });
                 }
             } catch (error) {
-                alert('There was an error submitting your application. Please email your resume directly to info@learnandgrowchildcarecenter.me or call 502-999-4143.');
+                alert('There was an error submitting your application. Please email your resume directly to info@learnandgrowchildcarecenter.org or call 502-999-4143.');
                 console.error('Error:', error);
             }
         });
@@ -3802,7 +3739,7 @@ function getForgotPasswordPage(message = '') {
             <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
                 <p class="text-sm text-gray-700">
                     <i class="fas fa-info-circle text-blue-600 mr-2"></i>
-                    A password reset link will be sent to <strong>LearnandGrowCC@gmail.com</strong>
+                    A password reset link will be sent to <strong>info@learnandgrowchildcarecenter.org</strong>
                 </p>
             </div>
             
@@ -3885,7 +3822,7 @@ function getResetPasswordPage(token = '', error = '') {
             <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
                 <p class="text-sm text-gray-700">
                     <i class="fas fa-info-circle text-yellow-600 mr-2"></i>
-                    Your new password will be sent to <strong>LearnandGrowCC@gmail.com</strong> for your records.
+                    Your new password will be sent to <strong>info@learnandgrowchildcarecenter.org</strong> for your records.
                 </p>
             </div>
             

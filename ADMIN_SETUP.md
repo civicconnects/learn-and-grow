@@ -151,7 +151,7 @@ npx wrangler pages deploy dist --project-name learn-and-grow-childcare
 ## ✅ Testing the Admin Panel
 
 ### Access the Admin Panel:
-1. Go to: https://www.learnandgrowchildcarecenter.me/admin
+1. Go to: https://www.learnandgrowchildcarecenter.org/admin
    (Or use: https://learn-and-grow-childcare.pages.dev/admin)
 
 2. You should see a login page

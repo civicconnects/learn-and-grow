@@ -5,7 +5,8 @@
   "pages_build_output_dir": "./dist",
   "compatibility_flags": ["nodejs_compat"],
   "vars": {
-    "ADMIN_PASSWORD": "admin123"
+    "ADMIN_PASSWORD": "admin123",
+    "RESEND_API_KEY": "re_EwEfwu3A_EvH8B7b9qHT5pSSPTkFqCHbK"
   },
   "kv_namespaces": [
     {
