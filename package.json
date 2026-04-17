@@ -17,7 +17,8 @@
     "git:log": "git log --oneline"
   },
   "dependencies": {
-    "hono": "^4.10.8"
+    "hono": "^4.10.8",
+    "pdf-parse": "^2.4.5"
   },
   "devDependencies": {
     "@hono/vite-build": "^1.2.0",

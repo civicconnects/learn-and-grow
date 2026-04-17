@@ -17,6 +17,8 @@ app.use('/api/*', cors())
 
 // Serve static files
 app.use('/static/*', serveStatic({ root: './public' }))
+app.use('/forms/*', serveStatic({ root: './public' }))
+app.use('/gallery/*', serveStatic({ root: './public' }))
 
 // Admin authentication middleware
 const requireAuth = async (c, next) => {
@@ -664,69 +666,57 @@ The Learn & Grow Team
       </div>
     `
   } else if (type === 'enrollment') {
-    subject = '✅ Enrollment Application Received - Learn & Grow Childcare Center'
-    textBody = `
-Thank you for submitting your enrollment application!
+    subject = 'Next Steps: Your Enrollment Application for Learn and Grow'
+    textBody = `Hi! Thank you for submitting your enrollment application for Learn and Grow Childcare Center. We have received your information and our team is currently reviewing it for availability.
 
-We have received your enrollment application for ${data.childFirstName} ${data.childLastName}. Our admissions team is reviewing your application and will contact you within 1-2 business days.
+What’s Next?
+We will contact you within 24–48 business hours to discuss your child's start date and schedule your final enrollment meeting.
 
-Application Details:
-Child: ${data.childFirstName} ${data.childLastName}
-Program: ${data.program}
-Requested Start Date: ${data.startDate}
+The Enrollment Checklist
+To secure your child’s spot, please have the following documents ready for our meeting. State law requires these to be on file before your child’s first day:
 
-Next Steps:
-1. Our admissions team will review your application
-2. We will contact you to schedule an orientation visit
-3. We'll provide you with enrollment paperwork and tuition information
-4. Complete any required health and immunization forms
+Immunization Certificate: A current, up-to-date record.
 
-Questions? Contact Us:
-Phone: 502-999-4143
-Email: info@learnandgrowchildcarecenter.org
+Health Assessment: A physical exam form signed by your pediatrician.
 
-Thank you for choosing Learn & Grow Childcare Center!
+Birth Certificate: A copy for our records.
 
-Best regards,
-The Admissions Team
-    `
+Important Reminder: A two-week deposit is required at the time of enrollment to guarantee your spot.
+
+We look forward to welcoming your family!
+
+The Learn and Grow Team
+(502) 777-7979`
     htmlBody = `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f9f9f9;">
         <div style="background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%); padding: 30px; border-radius: 10px 10px 0 0; text-align: center;">
-          <h1 style="color: white; margin: 0; font-size: 28px;">✅ Application Received!</h1>
+          <h1 style="color: white; margin: 0; font-size: 28px;">Next Steps</h1>
         </div>
         <div style="background: white; padding: 30px; border-radius: 0 0 10px 10px;">
-          <p style="font-size: 16px; color: #333;">Dear ${data.parentFirstName} ${data.parentLastName},</p>
+          <p style="font-size: 16px; color: #333;">Hi!</p>
+          <p style="font-size: 16px; color: #333; line-height: 1.6;">Thank you for submitting your enrollment application for Learn and Grow Childcare Center. We have received your information and our team is currently reviewing it for availability.</p>
           
-          <p style="font-size: 16px; color: #333; line-height: 1.6;">Thank you for submitting your enrollment application to <strong>Learn & Grow Childcare Center</strong>!</p>
+          <h2 style="color: #3b82f6; font-size: 20px; margin-top: 30px;">What’s Next?</h2>
+          <p style="font-size: 16px; color: #333; line-height: 1.6;">We will contact you within 24–48 business hours to discuss your child's start date and schedule your final enrollment meeting.</p>
           
-          <div style="background: #f0f7ff; padding: 20px; border-radius: 8px; border-left: 4px solid #3b82f6; margin: 20px 0;">
-            <p style="margin: 0; color: #333;"><strong>We have received your application</strong> for:</p>
-            <p style="margin: 10px 0 0 0; font-size: 18px; color: #3b82f6; font-weight: bold;">${data.childFirstName} ${data.childLastName}</p>
-            <p style="margin: 10px 0 0 0; color: #666;"><strong>Program:</strong> ${data.program}</p>
-            <p style="margin: 5px 0 0 0; color: #666;"><strong>Start Date:</strong> ${data.startDate}</p>
-          </div>
+          <h2 style="color: #3b82f6; font-size: 20px; margin-top: 30px;">The Enrollment Checklist</h2>
+          <p style="font-size: 16px; color: #333; line-height: 1.6;">To secure your child’s spot, please have the following documents ready for our meeting. State law requires these to be on file before your child’s first day:</p>
           
-          <h2 style="color: #3b82f6; font-size: 20px; margin-top: 30px;">📋 Next Steps</h2>
-          <ol style="color: #333; line-height: 1.8;">
-            <li>Our admissions team will review your application</li>
-            <li>We will contact you within <strong>1-2 business days</strong></li>
-            <li>Schedule an orientation visit</li>
-            <li>Receive enrollment paperwork and tuition information</li>
-            <li>Complete required health and immunization forms</li>
-          </ol>
+          <ul style="color: #333; line-height: 1.8;">
+            <li><strong>Immunization Certificate:</strong> A current, up-to-date record.</li>
+            <li><strong>Health Assessment:</strong> A physical exam form signed by your pediatrician.</li>
+            <li><strong>Birth Certificate:</strong> A copy for our records.</li>
+          </ul>
           
-          <div style="background: #f9f9f9; padding: 20px; border-radius: 8px; margin-top: 30px;">
-            <h3 style="color: #3b82f6; margin-top: 0;">📞 Questions? Contact Us</h3>
-            <p style="margin: 5px 0; color: #333;">
-              <strong>Phone:</strong> <a href="tel:502-999-4143" style="color: #3b82f6; text-decoration: none;">502-999-4143</a><br/>
-              <strong>Email:</strong> <a href="mailto:info@learnandgrowchildcarecenter.org" style="color: #3b82f6; text-decoration: none;">info@learnandgrowchildcarecenter.org</a>
+          <div style="background: #fff8eb; padding: 20px; border-radius: 8px; border-left: 4px solid #f59e0b; margin: 30px 0;">
+            <p style="margin: 0; color: #333; line-height: 1.6;">
+              <strong>Important Reminder:</strong> A two-week deposit is required at the time of enrollment to guarantee your spot.
             </p>
           </div>
           
-          <p style="font-size: 16px; color: #333; margin-top: 30px;">Thank you for choosing <strong>Learn & Grow Childcare Center</strong>!</p>
+          <p style="font-size: 16px; color: #333; margin-top: 30px;">We look forward to welcoming your family!</p>
           
-          <p style="font-size: 16px; color: #333; margin-top: 20px;">Best regards,<br/><strong>The Admissions Team</strong></p>
+          <p style="font-size: 16px; color: #333; margin-top: 20px;">The Learn and Grow Team<br/>(502) 777-7979</p>
         </div>
         <div style="text-align: center; padding: 20px; color: #999; font-size: 12px;">
           <p>© 2025 Learn & Grow Childcare Center. All rights reserved.</p>
@@ -734,84 +724,29 @@ The Admissions Team
       </div>
     `
   } else if (type === 'employment') {
-    subject = '✅ Employment Application Received - Learn & Grow Childcare Center'
-    textBody = `
-Thank you for your interest in joining our team!
+    subject = 'We’ve received your application – Learn and Grow Childcare'
+    textBody = `Hi there! Thank you for your interest in joining the Learn and Grow team.
 
-We have received your employment application for the position of ${data.position}. Our HR team is reviewing your application and will contact you within 3-5 business days.
+We have received your application and resume. Our leadership team reviews new applications weekly. If your qualifications match our current needs, we will reach out to you directly via phone or email to schedule an interview.
 
-Application Details:
-Name: ${data.firstName} ${data.lastName}
-Position: ${data.position}
-Desired Start Date: ${data.startDate}
+Thank you for wanting to help our children learn and grow!
 
-Next Steps:
-1. Our HR team will review your application and qualifications
-2. We will contact qualified candidates for an interview
-3. Background check and reference verification (for selected candidates)
-4. Final interview with our Director
-
-Why Join Learn & Grow:
-• Work with passionate, caring educators
-• Make a meaningful difference in children's lives
-• Professional development opportunities
-• Supportive team environment
-
-Questions? Contact Us:
-Phone: 502-999-4143
-Email: info@learnandgrowchildcarecenter.org
-
-Thank you for your interest in Learn & Grow Childcare Center!
-
-Best regards,
-The HR Team
-    `
+Learn and Grow Administration`
     htmlBody = `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f9f9f9;">
         <div style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); padding: 30px; border-radius: 10px 10px 0 0; text-align: center;">
-          <h1 style="color: white; margin: 0; font-size: 28px;">✅ Application Received!</h1>
+          <h1 style="color: white; margin: 0; font-size: 28px;">Application Received</h1>
         </div>
         <div style="background: white; padding: 30px; border-radius: 0 0 10px 10px;">
-          <p style="font-size: 16px; color: #333;">Dear ${data.firstName} ${data.lastName},</p>
+          <p style="font-size: 16px; color: #333;">Hi there!</p>
           
-          <p style="font-size: 16px; color: #333; line-height: 1.6;">Thank you for your interest in joining the <strong>Learn & Grow Childcare Center</strong> team!</p>
+          <p style="font-size: 16px; color: #333; line-height: 1.6;">Thank you for your interest in joining the Learn and Grow team.</p>
           
-          <div style="background: #f0fdf4; padding: 20px; border-radius: 8px; border-left: 4px solid #10b981; margin: 20px 0;">
-            <p style="margin: 0; color: #333;"><strong>We have received your application</strong> for:</p>
-            <p style="margin: 10px 0 0 0; font-size: 18px; color: #10b981; font-weight: bold;">${data.position}</p>
-            <p style="margin: 5px 0 0 0; color: #666;"><strong>Desired Start Date:</strong> ${data.startDate}</p>
-          </div>
+          <p style="font-size: 16px; color: #333; line-height: 1.6;">We have received your application and resume. Our leadership team reviews new applications weekly. If your qualifications match our current needs, we will reach out to you directly via phone or email to schedule an interview.</p>
           
-          <h2 style="color: #10b981; font-size: 20px; margin-top: 30px;">📋 What Happens Next</h2>
-          <ol style="color: #333; line-height: 1.8;">
-            <li>Our HR team will review your application and qualifications</li>
-            <li>We will contact qualified candidates within <strong>3-5 business days</strong></li>
-            <li>Selected candidates will be invited for an interview</li>
-            <li>Background check and reference verification</li>
-            <li>Final interview with our Director</li>
-          </ol>
+          <p style="font-size: 16px; color: #333; margin-top: 30px;">Thank you for wanting to help our children learn and grow!</p>
           
-          <div style="background: #f0fdf4; padding: 20px; border-radius: 8px; margin-top: 30px;">
-            <h3 style="color: #10b981; margin-top: 0;">💚 Why Join Learn & Grow</h3>
-            <ul style="color: #333; line-height: 1.8; margin: 10px 0;">
-              <li>Work with passionate, caring educators</li>
-              <li>Make a meaningful difference in children's lives</li>
-              <li>Professional development opportunities</li>
-              <li>Supportive team environment</li>
-            </ul>
-          </div>
-          
-          <div style="background: #f9f9f9; padding: 20px; border-radius: 8px; margin-top: 30px;">
-            <h3 style="color: #10b981; margin-top: 0;">📞 Questions? Contact Us</h3>
-            <p style="margin: 5px 0; color: #333;">
-              <strong>Phone:</strong> <a href="tel:502-999-4143" style="color: #10b981; text-decoration: none;">502-999-4143</a><br/>
-              <strong>Email:</strong> <a href="mailto:info@learnandgrowchildcarecenter.org" style="color: #10b981; text-decoration: none;">info@learnandgrowchildcarecenter.org</a>
-            </p>
-          </div>
-          
-          <p style="font-size: 16px; color: #333; margin-top: 30px;">Thank you for your interest in <strong>Learn & Grow Childcare Center</strong>!</p>
-          
-          <p style="font-size: 16px; color: #333; margin-top: 20px;">Best regards,<br/><strong>The HR Team</strong></p>
+          <p style="font-size: 16px; color: #333; margin-top: 20px;">Learn and Grow Administration</p>
         </div>
         <div style="text-align: center; padding: 20px; color: #999; font-size: 12px;">
           <p>© 2025 Learn & Grow Childcare Center. All rights reserved.</p>
@@ -1522,7 +1457,17 @@ app.get('/', (c) => {
                     <a href="#gallery" class="text-gray-700 hover:text-purple-600 transition"><i class="fas fa-images mr-1"></i>Gallery</a>
                     <a href="#team" class="text-gray-700 hover:text-purple-600 transition">Team</a>
                     <a href="#enrollment" class="text-gray-700 hover:text-purple-600 transition">Enrollment</a>
-                    <a href="#contact" class="text-gray-700 hover:text-purple-600 transition">Contact</a>
+                    <div class="relative group">
+                        <a href="#contact" class="text-gray-700 hover:text-purple-600 transition flex items-center">
+                            Contact <i class="fas fa-chevron-down ml-1 text-xs transition-transform group-hover:rotate-180"></i>
+                        </a>
+                        <div class="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-xl py-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50 border border-gray-100 transform origin-top scale-95 group-hover:scale-100">
+                            <a href="#contact" class="block px-4 py-2 text-sm text-gray-700 hover:bg-purple-50 hover:text-purple-600 transition">Contact Info</a>
+                            <a href="/forms/parent-handbook.pdf" target="_blank" class="block px-4 py-2 text-sm text-gray-700 hover:bg-purple-50 hover:text-purple-600 transition flex items-center">
+                                <i class="fas fa-file-pdf mr-2 text-red-500"></i> Parent Handbook
+                            </a>
+                        </div>
+                    </div>
                 </nav>
                 
                 <!-- CTA Buttons -->
@@ -1550,6 +1495,9 @@ app.get('/', (c) => {
                     <a href="#team" class="text-gray-700 hover:text-purple-600 transition py-2">Team</a>
                     <a href="#enrollment" class="text-gray-700 hover:text-purple-600 transition py-2">Enrollment</a>
                     <a href="#contact" class="text-gray-700 hover:text-purple-600 transition py-2">Contact</a>
+                    <a href="/forms/parent-handbook.pdf" target="_blank" class="text-gray-700 hover:text-purple-600 transition py-2 pl-4 flex items-center">
+                        <i class="fas fa-file-pdf mr-2 text-red-500"></i> Parent Handbook (PDF)
+                    </a>
                     <button onclick="scrollToSection('schedule-tour')" class="btn-primary text-white px-6 py-2 rounded-full font-semibold mt-3">
                         Schedule Tour
                     </button>
@@ -2386,38 +2334,28 @@ app.get('/', (c) => {
                     <p class="text-center text-gray-600 mb-8">Complete this form to apply for a position at Learn & Grow Childcare Center.</p>
                     
                     <form id="employmentForm" class="space-y-6">
-                        <!-- Personal Information -->
+                        <!-- 1. Personal Information -->
                         <div class="border-b border-gray-200 pb-6">
-                            <h4 class="text-xl font-bold text-gray-800 mb-4">Personal Information</h4>
+                            <h4 class="text-xl font-bold text-gray-800 mb-4 bg-purple-100 p-2 rounded">1. Personal Information</h4>
                             <div class="grid md:grid-cols-2 gap-4">
-                                <div>
-                                    <label class="block text-gray-700 font-semibold mb-2">First Name *</label>
-                                    <input type="text" name="firstName" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600">
-                                </div>
-                                <div>
-                                    <label class="block text-gray-700 font-semibold mb-2">Last Name *</label>
-                                    <input type="text" name="lastName" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600">
-                                </div>
+                                <div><label class="block text-gray-700 font-semibold mb-2">First Name *</label><input type="text" name="firstName" required class="w-full px-4 py-3 border border-gray-300 rounded-lg"></div>
+                                <div><label class="block text-gray-700 font-semibold mb-2">Last Name *</label><input type="text" name="lastName" required class="w-full px-4 py-3 border border-gray-300 rounded-lg"></div>
                             </div>
                             <div class="grid md:grid-cols-2 gap-4 mt-4">
-                                <div>
-                                    <label class="block text-gray-700 font-semibold mb-2">Email *</label>
-                                    <input type="email" name="email" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600">
-                                </div>
-                                <div>
-                                    <label class="block text-gray-700 font-semibold mb-2">Phone *</label>
-                                    <input type="tel" name="phone" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600">
-                                </div>
+                                <div><label class="block text-gray-700 font-semibold mb-2">Email *</label><input type="email" name="email" required class="w-full px-4 py-3 border border-gray-300 rounded-lg"></div>
+                                <div><label class="block text-gray-700 font-semibold mb-2">Phone *</label><input type="tel" name="phone" required class="w-full px-4 py-3 border border-gray-300 rounded-lg"></div>
                             </div>
-                            <div class="mt-4">
-                                <label class="block text-gray-700 font-semibold mb-2">Address *</label>
-                                <input type="text" name="address" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600">
+                            <div class="mt-4"><label class="block text-gray-700 font-semibold mb-2">Address *</label><input type="text" name="address" required class="w-full px-4 py-3 border border-gray-300 rounded-lg" placeholder="Street, City, State, Zip"></div>
+                            <div class="grid md:grid-cols-2 gap-4 mt-4">
+                                <div><label class="block text-gray-700 font-semibold mb-2">Are you 18 or older? *</label><select name="isAdult" required class="w-full px-4 py-3 border border-gray-300 rounded-lg"><option value="Yes">Yes</option><option value="No">No</option></select></div>
+                                <div><label class="block text-gray-700 font-semibold mb-2">Legally eligible for employment in the US? *</label><select name="eligibleUS" required class="w-full px-4 py-3 border border-gray-300 rounded-lg"><option value="Yes">Yes</option><option value="No">No</option></select></div>
                             </div>
+                            <div class="mt-4"><label class="block text-gray-700 font-semibold mb-2">Have you ever pled "guilty" or "no contest" to, or been convicted of a crime? *</label><select name="convicted" required class="w-full px-4 py-3 border border-gray-300 rounded-lg"><option value="No">No</option><option value="Yes">Yes</option></select><p class="text-xs text-gray-500 mt-1">Answering "yes" does not constitute an automatic bar to employment.</p></div>
                         </div>
-                        
-                        <!-- Position Information -->
+
+                        <!-- 2. Position Information -->
                         <div class="border-b border-gray-200 pb-6">
-                            <h4 class="text-xl font-bold text-gray-800 mb-4">Position Information</h4>
+                            <h4 class="text-xl font-bold text-gray-800 mb-4 bg-purple-100 p-2 rounded">2. Position Information</h4>
                             <div class="grid md:grid-cols-2 gap-4">
                                 <div>
                                     <label class="block text-gray-700 font-semibold mb-2">Position Applying For *</label>
@@ -2434,139 +2372,125 @@ app.get('/', (c) => {
                                         <option value="other">Other</option>
                                     </select>
                                 </div>
-                                <div>
-                                    <label class="block text-gray-700 font-semibold mb-2">Available Start Date *</label>
-                                    <input type="date" name="startDate" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600">
-                                </div>
+                                <div><label class="block text-gray-700 font-semibold mb-2">Available Start Date *</label><input type="date" name="startDate" required class="w-full px-4 py-3 border border-gray-300 rounded-lg"></div>
                             </div>
-                            <div class="mt-4">
-                                <label class="block text-gray-700 font-semibold mb-2">Desired Schedule *</label>
+                            <div class="grid md:grid-cols-2 gap-4 mt-4">
+                                <div><label class="block text-gray-700 font-semibold mb-2">Desired Schedule *</label>
                                 <select name="schedule" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600">
                                     <option value="">Select...</option>
                                     <option value="full-time">Full-Time</option>
                                     <option value="part-time">Part-Time</option>
+                                    <option value="temporary">Temporary / Summer</option>
                                     <option value="substitute">Substitute/As Needed</option>
-                                </select>
+                                </select></div>
+                                <div><label class="block text-gray-700 font-semibold mb-2">Are you able to meet attendance requirements? *</label><select name="canAttend" required class="w-full px-4 py-3 border border-gray-300 rounded-lg"><option value="Yes">Yes</option><option value="No">No</option></select></div>
                             </div>
                         </div>
-                        
-                        <!-- Education & Qualifications -->
+
+                        <!-- 3. Education -->
                         <div class="border-b border-gray-200 pb-6">
-                            <h4 class="text-xl font-bold text-gray-800 mb-4">Education & Qualifications</h4>
+                            <h4 class="text-xl font-bold text-gray-800 mb-4 bg-purple-100 p-2 rounded">3. Education & Certifications</h4>
+                            <div class="bg-gray-50 p-4 rounded-lg mb-4">
+                                <h5 class="font-bold mb-2">Highest Education Level</h5>
+                                <div class="grid md:grid-cols-2 gap-4">
+                                    <div><label class="block text-gray-700 font-semibold mb-2">School Name</label><input type="text" name="schoolName" class="w-full px-4 py-2 border border-gray-300 rounded-lg"></div>
+                                    <div><label class="block text-gray-700 font-semibold mb-2">Level / Degree</label><input type="text" name="educationLevel" class="w-full px-4 py-2 border border-gray-300 rounded-lg" placeholder="e.g. High School, Bachelors"></div>
+                                    <div><label class="block text-gray-700 font-semibold mb-2">Major / Field of Study</label><input type="text" name="major" class="w-full px-4 py-2 border border-gray-300 rounded-lg"></div>
+                                    <div><label class="block text-gray-700 font-semibold mb-2">Did You Graduate?</label><select name="graduated" class="w-full px-4 py-2 border border-gray-300 rounded-lg"><option value="">Select...</option><option value="Yes">Yes</option><option value="No">No</option></select></div>
+                                </div>
+                            </div>
                             <div>
-                                <label class="block text-gray-700 font-semibold mb-2">Highest Education Level *</label>
-                                <select name="education" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600">
-                                    <option value="">Select...</option>
-                                    <option value="high-school">High School Diploma/GED</option>
-                                    <option value="some-college">Some College</option>
-                                    <option value="associates">Associate's Degree</option>
-                                    <option value="bachelors">Bachelor's Degree</option>
-                                    <option value="masters">Master's Degree</option>
-                                    <option value="doctorate">Doctorate</option>
-                                </select>
-                            </div>
-                            <div class="mt-4">
-                                <label class="block text-gray-700 font-semibold mb-2">Major/Field of Study</label>
-                                <input type="text" name="major" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600" placeholder="e.g., Early Childhood Education">
-                            </div>
-                            <div class="mt-4">
-                                <label class="block text-gray-700 font-semibold mb-2">Certifications (list all relevant certifications)</label>
-                                <textarea name="certifications" rows="3" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600" placeholder="e.g., CDA, CPR/First Aid, Child Development Associate, etc."></textarea>
+                                <label class="block text-gray-700 font-semibold mb-2">Certifications</label>
+                                <textarea name="certifications" rows="2" class="w-full px-4 py-2 border border-gray-300 rounded-lg" placeholder="e.g., CDA, CPR/First Aid, etc."></textarea>
                             </div>
                         </div>
-                        
-                        <!-- Experience -->
+
+                        <!-- 4. Employment History -->
                         <div class="border-b border-gray-200 pb-6">
-                            <h4 class="text-xl font-bold text-gray-800 mb-4">Experience</h4>
-                            <div>
-                                <label class="block text-gray-700 font-semibold mb-2">Years of Experience in Childcare *</label>
-                                <select name="experience" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600">
-                                    <option value="">Select...</option>
-                                    <option value="0-1">Less than 1 year</option>
-                                    <option value="1-2">1-2 years</option>
-                                    <option value="3-5">3-5 years</option>
-                                    <option value="5-10">5-10 years</option>
-                                    <option value="10+">10+ years</option>
-                                </select>
+                            <h4 class="text-xl font-bold text-gray-800 mb-4 bg-purple-100 p-2 rounded">4. Employment History</h4>
+                            <p class="text-sm text-gray-600 mb-4">List most recent employment first. Include military service.</p>
+                            <!-- Employer 1 -->
+                            <div class="bg-gray-50 p-4 rounded-lg mb-4 text-sm">
+                                <p class="font-bold text-gray-700 mb-3 border-b pb-1">Most Recent Employer</p>
+                                <div class="grid md:grid-cols-2 gap-3">
+                                    <div class="col-span-2 md:col-span-1"><label class="block text-gray-700 font-semibold mb-1">Employer Name</label><input type="text" name="emp1Name" class="w-full px-3 py-2 border border-gray-300 rounded-lg"></div>
+                                    <div><label class="block text-gray-700 font-semibold mb-1">Job Title</label><input type="text" name="emp1Title" class="w-full px-3 py-2 border border-gray-300 rounded-lg"></div>
+                                    <div><label class="block text-gray-700 font-semibold mb-1">Dates (From - To)</label><input type="text" name="emp1Dates" class="w-full px-3 py-2 border border-gray-300 rounded-lg"></div>
+                                    <div><label class="block text-gray-700 font-semibold mb-1">Phone Number</label><input type="text" name="emp1Phone" class="w-full px-3 py-2 border border-gray-300 rounded-lg"></div>
+                                    <div class="col-span-2"><label class="block text-gray-700 font-semibold mb-1">Reason for Leaving</label><input type="text" name="emp1Reason" class="w-full px-3 py-2 border border-gray-300 rounded-lg"></div>
+                                    <div class="col-span-2"><label class="block text-gray-700 font-semibold mb-1">Duties / Responsibilities</label><textarea name="emp1Duties" rows="2" class="w-full px-3 py-2 border border-gray-300 rounded-lg"></textarea></div>
+                                </div>
                             </div>
-                            <div class="mt-4">
-                                <label class="block text-gray-700 font-semibold mb-2">Previous Work Experience (list most recent positions)</label>
-                                <textarea name="workHistory" rows="4" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600" placeholder="Include employer name, position, dates worked, and responsibilities"></textarea>
+                            <!-- Employer 2 -->
+                            <div class="bg-gray-50 p-4 rounded-lg text-sm">
+                                <p class="font-bold text-gray-700 mb-3 border-b pb-1">Previous Employer</p>
+                                <div class="grid md:grid-cols-2 gap-3">
+                                    <div class="col-span-2 md:col-span-1"><label class="block text-gray-700 font-semibold mb-1">Employer Name</label><input type="text" name="emp2Name" class="w-full px-3 py-2 border border-gray-300 rounded-lg"></div>
+                                    <div><label class="block text-gray-700 font-semibold mb-1">Job Title</label><input type="text" name="emp2Title" class="w-full px-3 py-2 border border-gray-300 rounded-lg"></div>
+                                    <div><label class="block text-gray-700 font-semibold mb-1">Dates (From - To)</label><input type="text" name="emp2Dates" class="w-full px-3 py-2 border border-gray-300 rounded-lg"></div>
+                                    <div><label class="block text-gray-700 font-semibold mb-1">Phone Number</label><input type="text" name="emp2Phone" class="w-full px-3 py-2 border border-gray-300 rounded-lg"></div>
+                                    <div class="col-span-2"><label class="block text-gray-700 font-semibold mb-1">Reason for Leaving</label><input type="text" name="emp2Reason" class="w-full px-3 py-2 border border-gray-300 rounded-lg"></div>
+                                </div>
                             </div>
                         </div>
-                        
-                        <!-- References -->
+
+                        <!-- 5. References -->
                         <div class="border-b border-gray-200 pb-6">
-                            <h4 class="text-xl font-bold text-gray-800 mb-4">Professional References</h4>
-                            <p class="text-sm text-gray-600 mb-4">Please provide at least 2 professional references (not family members)</p>
-                            
+                            <h4 class="text-xl font-bold text-gray-800 mb-4 bg-purple-100 p-2 rounded">5. Professional References</h4>
+                            <p class="text-sm text-gray-600 mb-4">List two references not related to you, whom you have known for at least one year.</p>
                             <!-- Reference 1 -->
-                            <div class="bg-gray-50 rounded-lg p-4 mb-4">
+                            <div class="bg-gray-50 rounded-lg p-4 mb-4 text-sm">
                                 <p class="font-bold text-gray-700 mb-3">Reference 1</p>
-                                <div class="grid md:grid-cols-2 gap-4">
-                                    <div>
-                                        <label class="block text-gray-700 font-semibold mb-2">Name *</label>
-                                        <input type="text" name="ref1Name" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600">
-                                    </div>
-                                    <div>
-                                        <label class="block text-gray-700 font-semibold mb-2">Phone *</label>
-                                        <input type="tel" name="ref1Phone" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600">
-                                    </div>
-                                    <div>
-                                        <label class="block text-gray-700 font-semibold mb-2">Relationship *</label>
-                                        <input type="text" name="ref1Relationship" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600" placeholder="e.g., Former Supervisor">
-                                    </div>
-                                    <div>
-                                        <label class="block text-gray-700 font-semibold mb-2">Email</label>
-                                        <input type="email" name="ref1Email" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600">
-                                    </div>
+                                <div class="grid md:grid-cols-2 gap-3">
+                                    <div><label class="block text-gray-700 font-semibold mb-1">Name *</label><input type="text" name="ref1Name" required class="w-full px-3 py-2 border border-gray-300 rounded-lg"></div>
+                                    <div><label class="block text-gray-700 font-semibold mb-1">Phone *</label><input type="tel" name="ref1Phone" required class="w-full px-3 py-2 border border-gray-300 rounded-lg"></div>
+                                    <div class="col-span-2"><label class="block text-gray-700 font-semibold mb-1">Address / Years Acquainted *</label><input type="text" name="ref1Address" required class="w-full px-3 py-2 border border-gray-300 rounded-lg" placeholder="Address, City, State and Years Known"></div>
                                 </div>
                             </div>
-                            
                             <!-- Reference 2 -->
-                            <div class="bg-gray-50 rounded-lg p-4">
+                            <div class="bg-gray-50 rounded-lg p-4 text-sm">
                                 <p class="font-bold text-gray-700 mb-3">Reference 2</p>
-                                <div class="grid md:grid-cols-2 gap-4">
-                                    <div>
-                                        <label class="block text-gray-700 font-semibold mb-2">Name *</label>
-                                        <input type="text" name="ref2Name" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600">
-                                    </div>
-                                    <div>
-                                        <label class="block text-gray-700 font-semibold mb-2">Phone *</label>
-                                        <input type="tel" name="ref2Phone" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600">
-                                    </div>
-                                    <div>
-                                        <label class="block text-gray-700 font-semibold mb-2">Relationship *</label>
-                                        <input type="text" name="ref2Relationship" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600" placeholder="e.g., Former Colleague">
-                                    </div>
-                                    <div>
-                                        <label class="block text-gray-700 font-semibold mb-2">Email</label>
-                                        <input type="email" name="ref2Email" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600">
-                                    </div>
+                                <div class="grid md:grid-cols-2 gap-3">
+                                    <div><label class="block text-gray-700 font-semibold mb-1">Name *</label><input type="text" name="ref2Name" required class="w-full px-3 py-2 border border-gray-300 rounded-lg"></div>
+                                    <div><label class="block text-gray-700 font-semibold mb-1">Phone *</label><input type="tel" name="ref2Phone" required class="w-full px-3 py-2 border border-gray-300 rounded-lg"></div>
+                                    <div class="col-span-2"><label class="block text-gray-700 font-semibold mb-1">Address / Years Acquainted *</label><input type="text" name="ref2Address" required class="w-full px-3 py-2 border border-gray-300 rounded-lg" placeholder="Address, City, State and Years Known"></div>
                                 </div>
                             </div>
                         </div>
-                        
-                        <!-- Additional Information -->
-                        <div>
-                            <h4 class="text-xl font-bold text-gray-800 mb-4">Additional Information</h4>
-                            <div>
-                                <label class="block text-gray-700 font-semibold mb-2">Why do you want to work at Learn & Grow Childcare Center? *</label>
-                                <textarea name="whyJoin" rows="3" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600"></textarea>
-                            </div>
-                            <div class="mt-4">
-                                <label class="block text-gray-700 font-semibold mb-2">Additional Comments</label>
-                                <textarea name="comments" rows="3" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600"></textarea>
+
+                        <!-- 6. Acknowledgments -->
+                        <div class="pb-4">
+                            <h4 class="text-xl font-bold text-gray-800 mb-4 bg-purple-100 p-2 rounded">6. Acknowledgments & Signature</h4>
+                            <p class="text-sm text-gray-600 mb-4">Please read the following statements carefully and check the boxes to agree.</p>
+                            
+                            <div class="space-y-4">
+                                <label class="flex items-start">
+                                    <input type="checkbox" name="agreeContent" required class="mt-1 mr-3 h-5 w-5 text-purple-600 focus:ring-purple-500 border-gray-300 rounded">
+                                    <span class="text-sm text-gray-700"><strong>Certification:</strong> I certify that the information above is true and correct and give authorization for investigation of all statements and information contained in this application. I voluntarily consent to allow Learn and Grow Childcare Center to check my references. I understand that deliberate falsification or significant omissions shall be grounds for disqualification or dismissal.</span>
+                                </label>
+                                
+                                <label class="flex items-start">
+                                    <input type="checkbox" name="agreePolicies" required class="mt-1 mr-3 h-5 w-5 text-purple-600 focus:ring-purple-500 border-gray-300 rounded">
+                                    <span class="text-sm text-gray-700"><strong>Employment Terms:</strong> I pledge, if hired, to comply with company policies and guidelines. I understand and agree that my employment is for no definite period and may be terminated by the company or myself with or without cause or previous notice.</span>
+                                </label>
+                                
+                                <label class="flex items-start">
+                                    <input type="checkbox" name="agreeRequirements" required class="mt-1 mr-3 h-5 w-5 text-purple-600 focus:ring-purple-500 border-gray-300 rounded">
+                                    <span class="text-sm text-gray-700"><strong>Requirements:</strong> I understand that employment may be subject to satisfactory completion of a physical examination or drug screening. I understand I am entering into a co-employment relationship, and will not be eligible for other benefits offered to non-co-employees.</span>
+                                </label>
+
+                                <div class="mt-6 p-4 bg-purple-50 border border-purple-200 rounded-lg">
+                                    <label class="block text-gray-700 font-bold mb-2">Electronic Signature (Type your full name) *</label>
+                                    <input type="text" name="signature" required placeholder="John Doe" class="w-full px-4 py-3 border border-purple-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600">
+                                    <div class="text-xs text-gray-500 mt-2">By typing your name, you are electronically signing this employment application.</div>
+                                </div>
                             </div>
                         </div>
                         
                         <!-- Submit Button -->
-                        <div class="bg-purple-50 rounded-lg p-6 text-center">
-                            <p class="text-sm text-gray-600 mb-4">
-                                By submitting this application, you certify that all information provided is true and complete. You authorize us to conduct background checks and contact references.
-                            </p>
-                            <button type="submit" class="btn-primary text-white px-12 py-4 rounded-lg font-bold text-lg">
-                                <i class="fas fa-paper-plane mr-2"></i>Submit Employment Application
+                        <div class="bg-purple-50 rounded-lg p-6 text-center border-t border-purple-200">
+                            <button type="submit" class="btn-primary text-white px-12 py-4 rounded-lg font-bold text-lg w-full md:w-auto hover:bg-purple-700 transition-colors shadow-lg">
+                                <i class="fas fa-paper-plane mr-2"></i>Submit Application
                             </button>
                         </div>
                     </form>
@@ -2696,46 +2620,24 @@ app.get('/', (c) => {
                 </div>
             </div>
             
-            <!-- Official PDF Form Download -->
-            <div class="bg-gradient-to-r from-purple-600 to-blue-600 rounded-2xl p-8 shadow-xl max-w-4xl mx-auto mb-8">
+            <!-- Official Digital Enrollment -->
+            <div class="bg-gradient-to-r from-purple-600 to-blue-600 rounded-2xl p-8 shadow-xl max-w-4xl mx-auto mb-12">
                 <div class="text-center">
-                    <div class="text-6xl mb-4">📄</div>
+                    <div class="text-6xl mb-4">📝</div>
                     <h3 class="text-3xl font-bold text-white mb-4">
-                        Official Enrollment Application Form
+                        Ready to Enroll?
                     </h3>
                     <p class="text-white text-lg mb-6 max-w-2xl mx-auto">
-                        Download our official enrollment form, fill it out at your convenience, and email it to us at 
-                        <a href="mailto:info@learnandgrowchildcarecenter.org" class="font-bold underline hover:text-yellow-300">info@learnandgrowchildcarecenter.org</a>
+                        We have streamlined our enrollment process. Complete our full digital enrollment form straight from your device to secure your spot today.
                     </p>
-                    <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
-                        <a href="/forms/enrollment-application.pdf" target="_blank" 
-                           class="bg-white text-purple-600 px-8 py-4 rounded-lg font-bold text-lg hover:bg-yellow-300 hover:text-purple-700 transition shadow-lg flex items-center gap-2">
-                            <i class="fas fa-download"></i>
-                            Download PDF Form
-                        </a>
-                        <a href="mailto:info@learnandgrowchildcarecenter.org" 
-                           class="bg-yellow-400 text-purple-900 px-8 py-4 rounded-lg font-bold text-lg hover:bg-yellow-300 transition shadow-lg flex items-center gap-2">
-                            <i class="fas fa-envelope"></i>
-                            Email Form to Us
-                        </a>
+                    <div class="flex justify-center items-center">
+                        <button onclick="openEnrollmentModal()" 
+                                class="bg-white text-purple-600 px-8 py-4 rounded-lg font-bold text-xl hover:bg-yellow-300 hover:text-purple-700 transition shadow-2xl hover:scale-105 flex items-center gap-3">
+                            <i class="fas fa-edit"></i>
+                            Complete Digital Enrollment
+                        </button>
                     </div>
-                    <p class="text-white text-sm mt-4 opacity-90">
-                        <i class="fas fa-info-circle mr-1"></i>
-                        The form will open in a new window. You can fill it out and save it on your computer.
-                    </p>
                 </div>
-            </div>
-            
-            <!-- Alternative: Quick Online Form Button -->
-            <div class="text-center max-w-4xl mx-auto mb-12">
-                <p class="text-gray-600 text-lg mb-4">
-                    <strong>Prefer to fill out a form online?</strong>
-                </p>
-                <button onclick="openEnrollmentModal()" 
-                        class="bg-gradient-to-r from-purple-600 to-blue-600 text-white px-8 py-4 rounded-lg font-bold text-lg hover:shadow-2xl hover:scale-105 transition-all duration-300 inline-flex items-center gap-2">
-                    <i class="fas fa-edit"></i>
-                    Fill Out Quick Online Form
-                </button>
             </div>
             
             <!-- Enrollment Modal (Hidden by Default) -->
@@ -2754,159 +2656,337 @@ app.get('/', (c) => {
                 </h3>
                 <p class="text-center text-gray-600 mb-8">Fill out this form to begin the enrollment process. We'll review your application and contact you within 24 hours.</p>
                 
-                <form id="enrollmentForm" class="space-y-6">
-                    <!-- Parent/Guardian Information -->
-                    <div class="border-b border-gray-200 pb-6">
-                        <h4 class="text-xl font-bold text-gray-800 mb-4">Parent/Guardian Information</h4>
-                        <div class="grid md:grid-cols-2 gap-4">
-                            <div>
-                                <label class="block text-gray-700 font-semibold mb-2">First Name *</label>
-                                <input type="text" name="parentFirstName" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600">
-                            </div>
-                            <div>
-                                <label class="block text-gray-700 font-semibold mb-2">Last Name *</label>
-                                <input type="text" name="parentLastName" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600">
-                            </div>
+                <form id="enrollmentForm" class="space-y-8">
+                    <!-- SECTION 1: Child/Parent Info -->
+                    <div class="border-b border-gray-200 pb-8">
+                        <div class="flex items-center mb-6">
+                            <div class="w-8 h-8 rounded-full bg-purple-600 text-white flex items-center justify-center font-bold mr-3">1</div>
+                            <h4 class="text-2xl font-bold text-gray-800">Child & Parent Information</h4>
                         </div>
-                        <div class="grid md:grid-cols-2 gap-4 mt-4">
-                            <div>
-                                <label class="block text-gray-700 font-semibold mb-2">Email *</label>
-                                <input type="email" name="parentEmail" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600">
+                        
+                        <div class="bg-gray-50 p-6 rounded-xl space-y-4">
+                            <h5 class="font-bold text-purple-700 text-lg border-b pb-2">Child's Details</h5>
+                            <div class="grid md:grid-cols-3 gap-4">
+                                <div>
+                                    <label class="block text-gray-700 font-semibold mb-2">Child's First Name *</label>
+                                    <input type="text" name="childFirstName" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600">
+                                </div>
+                                <div>
+                                    <label class="block text-gray-700 font-semibold mb-2">Child's Last Name *</label>
+                                    <input type="text" name="childLastName" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600">
+                                </div>
+                                <div>
+                                    <label class="block text-gray-700 font-semibold mb-2">Date of Birth *</label>
+                                    <input type="date" name="childDOB" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600">
+                                </div>
+                            </div>
+                            <div class="grid md:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-gray-700 font-semibold mb-2">Gender</label>
+                                    <select name="childGender" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600">
+                                        <option value="">Select...</option>
+                                        <option value="male">Male</option>
+                                        <option value="female">Female</option>
+                                        <option value="other">Other</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-gray-700 font-semibold mb-2">Program *</label>
+                                    <select name="program" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600">
+                                        <option value="">Select a program</option>
+                                        <option value="infant">Infant Care (6 weeks - 18 months)</option>
+                                        <option value="toddler">Toddler Program (18 months - 3 years)</option>
+                                        <option value="preschool">Preschool (3 - 5 years)</option>
+                                        <option value="schoolage">School Age Care (5 - 12 years)</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <h5 class="font-bold text-purple-700 text-lg border-b pb-2 pt-6">Parent/Guardian Details</h5>
+                            <div class="grid md:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-gray-700 font-semibold mb-2">First Name *</label>
+                                    <input type="text" name="parentFirstName" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600">
+                                </div>
+                                <div>
+                                    <label class="block text-gray-700 font-semibold mb-2">Last Name *</label>
+                                    <input type="text" name="parentLastName" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600">
+                                </div>
+                            </div>
+                            <div class="grid md:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-gray-700 font-semibold mb-2">Email *</label>
+                                    <input type="email" name="parentEmail" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600">
+                                </div>
+                                <div>
+                                    <label class="block text-gray-700 font-semibold mb-2">Phone *</label>
+                                    <input type="tel" name="parentPhone" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600">
+                                </div>
                             </div>
                             <div>
-                                <label class="block text-gray-700 font-semibold mb-2">Phone *</label>
-                                <input type="tel" name="parentPhone" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600">
+                                <label class="block text-gray-700 font-semibold mb-2">Home Address *</label>
+                                <input type="text" name="homeAddress" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600">
                             </div>
-                        </div>
-                        <div class="mt-4">
-                            <label class="block text-gray-700 font-semibold mb-2">Home Address *</label>
-                            <input type="text" name="homeAddress" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600">
-                        </div>
-                    </div>
-                    
-                    <!-- Child Information -->
-                    <div class="border-b border-gray-200 pb-6">
-                        <h4 class="text-xl font-bold text-gray-800 mb-4">Child Information</h4>
-                        <div class="grid md:grid-cols-3 gap-4">
-                            <div>
-                                <label class="block text-gray-700 font-semibold mb-2">Child's First Name *</label>
-                                <input type="text" name="childFirstName" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600">
-                            </div>
-                            <div>
-                                <label class="block text-gray-700 font-semibold mb-2">Child's Last Name *</label>
-                                <input type="text" name="childLastName" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600">
-                            </div>
-                            <div>
-                                <label class="block text-gray-700 font-semibold mb-2">Date of Birth *</label>
-                                <input type="date" name="childDOB" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600">
-                            </div>
-                        </div>
-                        <div class="grid md:grid-cols-2 gap-4 mt-4">
-                            <div>
-                                <label class="block text-gray-700 font-semibold mb-2">Gender</label>
-                                <select name="childGender" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600">
-                                    <option value="">Select...</option>
-                                    <option value="male">Male</option>
-                                    <option value="female">Female</option>
-                                    <option value="other">Other</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label class="block text-gray-700 font-semibold mb-2">Program *</label>
-                                <select name="program" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600">
-                                    <option value="">Select a program</option>
-                                    <option value="infant">Infant Care (6 weeks - 18 months)</option>
-                                    <option value="toddler">Toddler Program (18 months - 3 years)</option>
-                                    <option value="preschool">Preschool (3 - 5 years)</option>
-                                    <option value="schoolage">School Age Care (5 - 12 years)</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Enrollment Details -->
-                    <div class="border-b border-gray-200 pb-6">
-                        <h4 class="text-xl font-bold text-gray-800 mb-4">Enrollment Details</h4>
-                        <div class="grid md:grid-cols-2 gap-4">
-                            <div>
-                                <label class="block text-gray-700 font-semibold mb-2">Desired Start Date *</label>
-                                <input type="date" name="startDate" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600">
-                            </div>
-                            <div>
-                                <label class="block text-gray-700 font-semibold mb-2">Schedule Type *</label>
-                                <select name="scheduleType" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600">
-                                    <option value="">Select...</option>
-                                    <option value="full-time">Full-Time (5 days/week)</option>
-                                    <option value="part-time">Part-Time (2-4 days/week)</option>
-                                    <option value="before-after">Before/After School Only</option>
-                                </select>
+                            <div class="grid md:grid-cols-2 gap-4 mt-2">
+                                <div>
+                                    <label class="block text-gray-700 font-semibold mb-2">City/Zip *</label>
+                                    <input type="text" name="cityZip" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600">
+                                </div>
                             </div>
                         </div>
                     </div>
                     
-                    <!-- Emergency Contact -->
-                    <div class="border-b border-gray-200 pb-6">
-                        <h4 class="text-xl font-bold text-gray-800 mb-4">Emergency Contact</h4>
-                        <div class="grid md:grid-cols-2 gap-4">
+                    <!-- SECTION 2: Care Schedule -->
+                    <div class="border-b border-gray-200 pb-8">
+                        <div class="flex items-center mb-6">
+                            <div class="w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold mr-3">2</div>
+                            <h4 class="text-2xl font-bold text-gray-800">Care Schedule</h4>
+                        </div>
+                        <div class="bg-gray-50 p-6 rounded-xl space-y-4">
+                            <p class="text-sm text-gray-600">We are open Monday through Friday (5:30 am to 7:00 pm).</p>
+                            
+                            <div class="grid md:grid-cols-2 gap-6">
+                                <div>
+                                    <label class="block text-gray-700 font-semibold mb-2">Desired Start Date *</label>
+                                    <input type="date" name="startDate" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600">
+                                </div>
+                            </div>
+                            
+                            <div class="grid md:grid-cols-2 gap-6">
+                                <div>
+                                    <label class="block text-gray-700 font-semibold mb-2">Drop-off Time *</label>
+                                    <input type="time" name="dropOffTime" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600">
+                                </div>
+                                <div>
+                                    <label class="block text-gray-700 font-semibold mb-2">Pick-up Time *</label>
+                                    <input type="time" name="pickUpTime" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600">
+                                </div>
+                            </div>
+
                             <div>
-                                <label class="block text-gray-700 font-semibold mb-2">Emergency Contact Name *</label>
-                                <input type="text" name="emergencyName" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600">
+                                <label class="block text-gray-700 font-semibold mb-3">Days needing childcare (check all that apply) *</label>
+                                <div class="flex flex-wrap gap-4">
+                                    <label class="flex items-center"><input type="checkbox" name="days" value="Monday" class="mr-2"> Monday</label>
+                                    <label class="flex items-center"><input type="checkbox" name="days" value="Tuesday" class="mr-2"> Tuesday</label>
+                                    <label class="flex items-center"><input type="checkbox" name="days" value="Wednesday" class="mr-2"> Wednesday</label>
+                                    <label class="flex items-center"><input type="checkbox" name="days" value="Thursday" class="mr-2"> Thursday</label>
+                                    <label class="flex items-center"><input type="checkbox" name="days" value="Friday" class="mr-2"> Friday</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- SECTION 3: Financials/Tuition -->
+                    <div class="border-b border-gray-200 pb-8">
+                        <div class="flex items-center mb-6">
+                            <div class="w-8 h-8 rounded-full bg-green-600 text-white flex items-center justify-center font-bold mr-3">3</div>
+                            <h4 class="text-2xl font-bold text-gray-800">Financials & Tuition</h4>
+                        </div>
+                        
+                        <div class="bg-gray-50 p-6 rounded-xl space-y-4">
+                            <div>
+                                <label class="block text-gray-700 font-semibold mb-3">Payment Frequency Preference *</label>
+                                <div class="space-y-2">
+                                    <label class="flex items-center text-gray-700">
+                                        <input type="radio" name="paymentOption" value="weekly" required class="mr-3"> 
+                                        <span><strong>Option 1:</strong> Pay Weekly (due on Monday of each week)</span>
+                                    </label>
+                                    <label class="flex items-center text-gray-700">
+                                        <input type="radio" name="paymentOption" value="monthly" required class="mr-3"> 
+                                        <span><strong>Option 2:</strong> Pay Monthly (due on the 1st of each month)</span>
+                                    </label>
+                                </div>
+                                <p class="text-xs text-gray-500 mt-2 italic">Note: To figure out the monthly payment you multiply the weekly amount x 52 weeks, then divide by 12 months.</p>
+                            </div>
+                            
+                            <div class="p-4 bg-green-100 rounded-lg mt-4 border border-green-200">
+                                <p class="text-sm text-green-800">
+                                    <strong>Deposit Required:</strong> An amount equal to two weeks of childcare tuition is required as a deposit. This deposit will be credited towards the last two weeks of enrollment.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- SECTION 4: Authorized Pickups -->
+                    <div class="border-b border-gray-200 pb-8">
+                        <div class="flex items-center mb-6">
+                            <div class="w-8 h-8 rounded-full bg-yellow-500 text-white flex items-center justify-center font-bold mr-3">4</div>
+                            <h4 class="text-2xl font-bold text-gray-800">Emergency & Authorized Pickups</h4>
+                        </div>
+
+                        <div class="bg-gray-50 p-6 rounded-xl space-y-6">
+                            <p class="text-sm text-gray-600 border-b pb-4">
+                                Persons OTHER than parents authorized to pick up your child. <br>
+                                <em>Note: Written permission is necessary if you want someone other than those listed below to pick up your child.</em>
+                            </p>
+                            
+                            <!-- Authorized Pickup 1 -->
+                            <div class="space-y-4">
+                                <h6 class="font-bold text-gray-700">Authorized Contact 1 (Required)</h6>
+                                <div class="grid md:grid-cols-3 gap-4">
+                                    <div>
+                                        <label class="block text-gray-700 text-sm font-semibold mb-2">Name *</label>
+                                        <input type="text" name="pickup1Name" required class="w-full px-4 py-2 border border-gray-300 rounded-lg">
+                                    </div>
+                                    <div>
+                                        <label class="block text-gray-700 text-sm font-semibold mb-2">Mobile Phone *</label>
+                                        <input type="tel" name="pickup1Mobile" required class="w-full px-4 py-2 border border-gray-300 rounded-lg">
+                                    </div>
+                                    <div>
+                                        <label class="block text-gray-700 text-sm font-semibold mb-2">Home Phone</label>
+                                        <input type="tel" name="pickup1Home" class="w-full px-4 py-2 border border-gray-300 rounded-lg">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Authorized Pickup 2 -->
+                            <div class="space-y-4">
+                                <h6 class="font-bold text-gray-700">Authorized Contact 2 (Optional)</h6>
+                                <div class="grid md:grid-cols-3 gap-4">
+                                    <div>
+                                        <label class="block text-gray-700 text-sm font-semibold mb-2">Name</label>
+                                        <input type="text" name="pickup2Name" class="w-full px-4 py-2 border border-gray-300 rounded-lg">
+                                    </div>
+                                    <div>
+                                        <label class="block text-gray-700 text-sm font-semibold mb-2">Mobile Phone</label>
+                                        <input type="tel" name="pickup2Mobile" class="w-full px-4 py-2 border border-gray-300 rounded-lg">
+                                    </div>
+                                    <div>
+                                        <label class="block text-gray-700 text-sm font-semibold mb-2">Home Phone</label>
+                                        <input type="tel" name="pickup2Home" class="w-full px-4 py-2 border border-gray-300 rounded-lg">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Medical Add-on -->
+                    <div class="border-b border-gray-200 pb-8">
+                        <div class="flex items-center mb-6">
+                            <div class="w-8 h-8 rounded-full bg-red-500 text-white flex items-center justify-center font-bold mr-3"><i class="fas fa-notes-medical"></i></div>
+                            <h4 class="text-2xl font-bold text-gray-800">Medical Information</h4>
+                        </div>
+                        
+                        <div class="bg-gray-50 p-6 rounded-xl space-y-4">
+                            <div class="grid md:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-gray-700 font-semibold mb-2">Primary Physician Name *</label>
+                                    <input type="text" name="physicianName" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500">
+                                </div>
+                                <div>
+                                    <label class="block text-gray-700 font-semibold mb-2">Physician Phone *</label>
+                                    <input type="tel" name="physicianPhone" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500">
+                                </div>
                             </div>
                             <div>
-                                <label class="block text-gray-700 font-semibold mb-2">Emergency Contact Phone *</label>
-                                <input type="tel" name="emergencyPhone" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600">
+                                <label class="block text-gray-700 font-semibold mb-2">Preferred Emergency Hospital *</label>
+                                <input type="text" name="emergencyHospital" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500">
+                            </div>
+
+                            <div>
+                                <label class="block text-gray-700 font-semibold mb-2">Allergies</label>
+                                <textarea name="allergies" rows="2" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500" placeholder="List any food or medication allergies. Write N/A if none."></textarea>
+                            </div>
+                            <div class="mt-4">
+                                <label class="block text-gray-700 font-semibold mb-2">Current Medications / Medical Conditions</label>
+                                <textarea name="medicalNeeds" rows="2" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500" placeholder="Write N/A if none."></textarea>
                             </div>
                         </div>
-                        <div class="mt-4">
-                            <label class="block text-gray-700 font-semibold mb-2">Relationship to Child *</label>
-                            <input type="text" name="emergencyRelationship" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600" placeholder="e.g., Grandmother, Uncle, Family Friend">
+                    </div>
+
+                    <!-- SECTION 5: Policy Acknowledgments -->
+                    <div class="border-b border-gray-200 pb-8">
+                        <div class="flex items-center mb-6">
+                            <div class="w-8 h-8 rounded-full bg-purple-900 text-white flex items-center justify-center font-bold mr-3">5</div>
+                            <h4 class="text-2xl font-bold text-gray-800">Policy Acknowledgments</h4>
+                        </div>
+                        
+                        <div class="bg-gray-50 p-6 rounded-xl">
+                            <p class="text-gray-700 font-semibold mb-6">Please carefully read and agree to each of the following policies by checking the box next to them.</p>
+
+                            <div class="space-y-6">
+                                <label class="flex items-start bg-white p-4 border border-gray-200 rounded-lg hover:border-purple-400 cursor-pointer transition">
+                                    <input type="checkbox" required class="mt-1 mr-4 w-5 h-5 text-purple-600 border-gray-300 rounded focus:ring-purple-500">
+                                    <div class="text-sm">
+                                        <p class="font-bold text-gray-800">A. DIAPERS/WIPES</p>
+                                        <p class="text-gray-600 mt-1">It is the parent's responsibility to provide diapers, wipes, and diaper cream. You must check periodically if your child needs more. Each child has his or her own labeled bin.</p>
+                                    </div>
+                                </label>
+
+                                <label class="flex items-start bg-white p-4 border border-gray-200 rounded-lg hover:border-purple-400 cursor-pointer transition">
+                                    <input type="checkbox" required class="mt-1 mr-4 w-5 h-5 text-purple-600 border-gray-300 rounded focus:ring-purple-500">
+                                    <div class="text-sm">
+                                        <p class="font-bold text-gray-800">B. SHOES</p>
+                                        <p class="text-gray-600 mt-1">We prefer children come to daycare in shoes that lace up and/or stay on their feet. If your child comes in flip-flops or Crocs that fall off, we cannot guarantee their availability at pick-up.</p>
+                                    </div>
+                                </label>
+
+                                <label class="flex items-start bg-white p-4 border border-gray-200 rounded-lg hover:border-purple-400 cursor-pointer transition">
+                                    <input type="checkbox" required class="mt-1 mr-4 w-5 h-5 text-purple-600 border-gray-300 rounded focus:ring-purple-500">
+                                    <div class="text-sm">
+                                        <p class="font-bold text-gray-800">C. TRIAL PERIOD</p>
+                                        <p class="text-gray-600 mt-1">The first 30 days is a trial period, where either party may terminate the contract without notice if either party feels our childcare environment is not the best fit.</p>
+                                    </div>
+                                </label>
+
+                                <label class="flex items-start bg-white p-4 border border-gray-200 rounded-lg hover:border-purple-400 cursor-pointer transition">
+                                    <input type="checkbox" required class="mt-1 mr-4 w-5 h-5 text-purple-600 border-gray-300 rounded focus:ring-purple-500">
+                                    <div class="text-sm">
+                                        <p class="font-bold text-gray-800">D. TERMINATION POLICY</p>
+                                        <p class="text-gray-600 mt-1">After 30 days, 60 Days written notice from parent or provider is required to terminate the contract (except for gross misconduct). Advance notice helps us keep open spots minimal.</p>
+                                    </div>
+                                </label>
+
+                                <label class="flex items-start bg-white p-4 border border-gray-200 rounded-lg hover:border-purple-400 cursor-pointer transition">
+                                    <input type="checkbox" required class="mt-1 mr-4 w-5 h-5 text-purple-600 border-gray-300 rounded focus:ring-purple-500">
+                                    <div class="text-sm">
+                                        <p class="font-bold text-gray-800">E. HOURS OF OPERATION</p>
+                                        <p class="text-gray-600 mt-1">We are open Mon-Fri 5:30 am to 7:00 pm. We close promptly at 7:00 pm to attend family activities. Consistent late pick-ups may result in contract termination.</p>
+                                    </div>
+                                </label>
+
+                                <label class="flex items-start bg-white p-4 border border-gray-200 rounded-lg hover:border-purple-400 cursor-pointer transition">
+                                    <input type="checkbox" required class="mt-1 mr-4 w-5 h-5 text-purple-600 border-gray-300 rounded focus:ring-purple-500">
+                                    <div class="text-sm">
+                                        <p class="font-bold text-gray-800">F. DAYCARE DOORS</p>
+                                        <p class="text-gray-600 mt-1">Please promptly close each door after opening it without letting any children follow you through it.</p>
+                                    </div>
+                                </label>
+
+                                <label class="flex items-start bg-white p-4 border border-gray-200 rounded-lg hover:border-purple-400 cursor-pointer transition">
+                                    <input type="checkbox" required class="mt-1 mr-4 w-5 h-5 text-purple-600 border-gray-300 rounded focus:ring-purple-500">
+                                    <div class="text-sm">
+                                        <p class="font-bold text-gray-800">G. EXCLUSION FROM DAYCARE</p>
+                                        <p class="text-gray-600 mt-1">Children with illnesses (fever 100+, diarrhea, vomiting, contagious rash, etc.) must be completely symptom-free before returning. If on antibiotics, a 24-hr period is required.</p>
+                                    </div>
+                                </label>
+
+                                <label class="flex items-start bg-white p-4 border border-gray-200 rounded-lg hover:border-purple-400 cursor-pointer transition">
+                                    <input type="checkbox" required class="mt-1 mr-4 w-5 h-5 text-purple-600 border-gray-300 rounded focus:ring-purple-500">
+                                    <div class="text-sm">
+                                        <p class="font-bold text-gray-800">H. PICK-UPS AND DROP-OFFS</p>
+                                        <p class="text-gray-600 mt-1">Please make pick-up and drop-offs brief. Send child clean, dressed, and fed. Never leave without telling your child goodbye, and control your child during these times.</p>
+                                    </div>
+                                </label>
+                            </div>
                         </div>
                     </div>
                     
-                    <!-- Medical Information -->
-                    <div class="border-b border-gray-200 pb-6">
-                        <h4 class="text-xl font-bold text-gray-800 mb-4">Medical Information</h4>
-                        <div>
-                            <label class="block text-gray-700 font-semibold mb-2">Allergies</label>
-                            <textarea name="allergies" rows="2" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600" placeholder="List any known allergies"></textarea>
+                    <!-- Submit Button & Mandatory Note -->
+                    <div class="bg-purple-100 border border-purple-300 rounded-xl p-8 text-center shadow-inner">
+                        <div class="bg-white border-l-4 border-red-500 p-4 mb-6 shadow-sm mx-auto max-w-3xl text-left">
+                            <p class="text-red-700 font-bold uppercase text-lg mb-1">
+                                <i class="fas fa-exclamation-triangle mr-2"></i> Required at Enrollment
+                            </p>
+                            <p class="text-gray-800">
+                                <strong>A current Immunization Certificate and a Physician-Signed Health Assessment are required to secure your spot.</strong> You will receive a document checklist in your confirmation email.
+                            </p>
                         </div>
-                        <div class="mt-4">
-                            <label class="block text-gray-700 font-semibold mb-2">Special Medical Needs</label>
-                            <textarea name="medicalNeeds" rows="2" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600" placeholder="Any medical conditions or special requirements"></textarea>
-                        </div>
-                        <div class="mt-4">
-                            <label class="block text-gray-700 font-semibold mb-2">Pediatrician Name and Phone</label>
-                            <input type="text" name="pediatrician" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600">
-                        </div>
-                    </div>
-                    
-                    <!-- Additional Information -->
-                    <div>
-                        <h4 class="text-xl font-bold text-gray-800 mb-4">Additional Information</h4>
-                        <div>
-                            <label class="block text-gray-700 font-semibold mb-2">How did you hear about us?</label>
-                            <select name="referralSource" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600">
-                                <option value="">Select...</option>
-                                <option value="google">Google Search</option>
-                                <option value="facebook">Facebook</option>
-                                <option value="friend">Friend/Family Referral</option>
-                                <option value="sign">Saw Our Sign</option>
-                                <option value="other">Other</option>
-                            </select>
-                        </div>
-                        <div class="mt-4">
-                            <label class="block text-gray-700 font-semibold mb-2">Additional Comments or Questions</label>
-                            <textarea name="additionalComments" rows="3" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600"></textarea>
-                        </div>
-                    </div>
-                    
-                    <!-- Submit Button -->
-                    <div class="bg-purple-50 rounded-lg p-6 text-center">
-                        <p class="text-sm text-gray-600 mb-4">
-                            By submitting this form, you agree to our enrollment policies and authorize us to contact you regarding your application.
+                        <p class="text-sm text-gray-600 mb-6 font-medium">
+                            By submitting this application, you electronically sign and bound to our enrollment policies, authorize us to contact you, and agree to our terms of service.
                         </p>
-                        <button type="submit" class="btn-primary text-white px-12 py-4 rounded-lg font-bold text-lg">
-                            <i class="fas fa-paper-plane mr-2"></i>Submit Enrollment Application
+                        <button type="submit" class="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white px-12 py-5 rounded-xl font-bold text-xl shadow-xl hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 w-full md:w-auto mx-auto flex items-center justify-center">
+                            <i class="fas fa-paper-plane mr-3"></i> Submit Application & Sign Agreements
                         </button>
                     </div>
                 </form>
@@ -3372,7 +3452,7 @@ app.get('/', (c) => {
                 <div>
                     <h4 class="font-bold text-lg mb-4">Resources</h4>
                     <ul class="space-y-2 text-purple-200 text-sm">
-                        <li><a href="#" class="hover:text-white transition">Parent Handbook</a></li>
+                        <li><a href="/forms/parent-handbook.pdf" target="_blank" class="hover:text-white transition"><i class="fas fa-file-pdf mr-1 text-red-400"></i> Parent Handbook</a></li>
                         <li><a href="#" class="hover:text-white transition">Calendar & Events</a></li>
                         <li><a href="#" class="hover:text-white transition">Forms & Documents</a></li>
                         <li><a href="#" class="hover:text-white transition">FAQ</a></li>
@@ -3569,12 +3649,18 @@ app.get('/', (c) => {
             const formData = new FormData(e.target);
             const data = Object.fromEntries(formData);
             
+            // Handle multiple checkboxes for 'days'
+            const days = formData.getAll('days');
+            if (days.length > 0) {
+                data.days = days.join(', ');
+            }
+            
             try {
                 const response = await axios.post('/api/enrollment-application', data);
                 
                 if (response.data.success) {
                     closeEnrollmentModal();
-                    alert('Thank you for your enrollment application! We have received your information and will review it carefully. Our admissions team will contact you within 24-48 hours to discuss next steps.\\n\\nApplication Summary:\\n- Parent: ' + data.parentFirstName + ' ' + data.parentLastName + '\\n- Child: ' + data.childFirstName + ' ' + data.childLastName + '\\n- Program: ' + data.program + '\\n- Start Date: ' + data.startDate);
+                    alert('✅ Thank you for completing your digital enrollment!\\n\\nWe have emailed you a Success & Document Checklist. Please review it for your required next steps (including Health and Immunization records).\\n\\nOur admissions team will contact you within 24-48 hours.\\n\\nSummary:\\n- Child: ' + data.childFirstName + ' ' + data.childLastName + '\\n- Program: ' + data.program + '\\n- Start Date: ' + data.startDate);
                     e.target.reset();
                     window.scrollTo({ top: 0, behavior: 'smooth' });
                 }
@@ -3597,7 +3683,7 @@ app.get('/', (c) => {
                 if (response.data.success) {
                     closeEnrollmentModal();
                     closeEmploymentModal();
-                    alert('✅ Thank you for your interest in joining our team! We have received your employment application.\\n\\n📧 A confirmation email has been sent to ' + data.email + '\\n\\nOur HR team will review your application and contact you within 5-7 business days if your qualifications match our current openings.\\n\\nNext Steps:\\n1. Background check authorization (if selected)\\n2. Interview scheduling\\n3. Reference checks\\n\\nWe appreciate your interest in Learn & Grow Childcare Center!');
+                    alert('✅ Thank you for your employment application!\\n\\nWe have received your application successfully. Our HR team will review your qualifications and contact you within 3-5 business days.\\n\\nApplicant: ' + data.firstName + ' ' + data.lastName + '\\nPosition: ' + (data.position || 'Not specified'));
                     e.target.reset();
                     window.scrollTo({ top: 0, behavior: 'smooth' });
                 }
