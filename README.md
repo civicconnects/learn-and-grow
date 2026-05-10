@@ -408,7 +408,7 @@ All form submissions are logged to the console and can be viewed in:
 **Step 1: Set up Email Routing**
 1. Go to Cloudflare Dashboard → Email → Email Routing
 2. Add your domain: `learnandgrowchildcarecenter.org`
-3. Create destination address: `info@learnandgrowchildcarecenter.org`
+3. Create destination address: `learnandgrowcc@gmail.com`
 4. Verify email ownership
 
 **Step 2: Install MailChannels (Free Email Sending)**
@@ -422,7 +422,7 @@ app.post('/api/enrollment-application', async (c) => {
   // Send email via MailChannels (free on Cloudflare)
   const message = new EmailMessage(
     "noreply@learnandgrowchildcarecenter.org",
-    "info@learnandgrowchildcarecenter.org",
+    "learnandgrowcc@gmail.com",
     `New Enrollment Application: ${data.childFirstName} ${data.childLastName}`
   );
   
@@ -471,7 +471,7 @@ app.post('/api/enrollment-application', async (c) => {
 
 ### Email Templates
 
-When you set up email sending, emails will be sent to: **info@learnandgrowchildcarecenter.org**
+When you set up email sending, emails will be sent to: **learnandgrowcc@gmail.com**
 
 Each form submission will include:
 - **Tour Requests**: Parent info, child age, preferred date
@@ -491,7 +491,7 @@ Until email is configured:
 ### 1. Editing Contact Information
 All contact information is centralized in `src/index.tsx`. Search and replace:
 - **Phone**: Search for `502-999-4143` and replace with your new number
-- **Email**: Search for `info@learnandgrowchildcarecenter.org` and replace
+- **Email**: Search for `learnandgrowcc@gmail.com` and replace
 - **Address**: Search for `4014 Bardstown Rd, Louisville, KY 40218-2631` and replace
 
 **Important locations to update:**
@@ -590,7 +590,7 @@ Form handling is in the JavaScript section (line ~1432-1449). Update API endpoin
 
 ## Support
 For questions or issues:
-- **Email**: info@learnandgrowchildcarecenter.org
+- **Email**: learnandgrowcc@gmail.com
 - **Phone**: 502-999-4143
 - **Address**: 4014 Bardstown Rd, Louisville, KY 40218-2631
 - **Website**: https://www.learnandgrowchildcarecenter.org
