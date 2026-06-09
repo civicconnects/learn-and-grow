@@ -1209,8 +1209,8 @@ const getStructuredData = () => {
           {
             "@type": "OpeningHoursSpecification",
             "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
-            "opens": "06:30",
-            "closes": "18:00"
+            "opens": "05:30",
+            "closes": "19:00"
           }
         ],
         "aggregateRating": {
@@ -3003,7 +3003,7 @@ app.get('/', (c) => {
                 <div class="space-y-4">
                     <div class="bg-gray-50 rounded-xl p-6">
                         <h4 class="font-bold text-lg mb-2">What are your operating hours?</h4>
-                        <p class="text-gray-600">We're open Monday-Friday, 6:30 AM - 6:00 PM. We're closed on major holidays.</p>
+                        <p class="text-gray-600">We're open Monday-Friday, 5:30 AM - 7:00 PM. We're closed on major holidays.</p>
                     </div>
                     <div class="bg-gray-50 rounded-xl p-6">
                         <h4 class="font-bold text-lg mb-2">What is your teacher-to-child ratio?</h4>
@@ -3316,7 +3316,7 @@ app.get('/', (c) => {
                                 <i class="fas fa-clock text-2xl text-yellow-600 mr-4 mt-1"></i>
                                 <div>
                                     <p class="font-bold text-gray-800 mb-1">Operating Hours</p>
-                                    <p class="text-gray-600">Monday - Friday: 6:30 AM - 6:00 PM</p>
+                                    <p class="text-gray-600">Monday - Friday: 5:30 AM - 7:00 PM</p>
                                     <p class="text-gray-600">Saturday - Sunday: Closed</p>
                                 </div>
                             </div>
